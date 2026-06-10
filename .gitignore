@@ -1,0 +1,17 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/native_bird
+native_bird.so
+native_bird.dylib
+native_bird.dll
+libnative_bird.a
+native_bird.a
+native_bird.lib
+native_bird-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
