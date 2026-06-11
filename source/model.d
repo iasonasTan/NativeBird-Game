@@ -28,6 +28,12 @@ abstract class Model {
         this.texturePtrs = texturePtrs;
     }
 
+    bool collidesWith(Model other) {
+        return
+            this.x + this.w > other.x && this.x < other.x + other.w &&
+            this.y + this.h > other.y && this.y < other.y + other.h;
+    }
+
     void update(Context context) {
         // blank
     }
@@ -58,7 +64,20 @@ final class Player : Model {
         float dt = context.getDeltaTime();
         velocityY += GRAVITY * dt;
         y += velocityY * dt;
-        playerKeys(context);
+        if(!dead) {
+            playerKeys(context);
+        }
+        if(y > SCREEN_HEIGHT) {
+            // Game Over !!!
+        }
+    }
+
+    void kill() {
+        dead = true;
+    }
+
+    bool alive() {
+        return !dead;
     }
 
     void flap(Context context) {
@@ -82,9 +101,11 @@ final class Background : Model {
     }
 
     override void update(Context context) {
-        x += SPEED * context.getDeltaTime();
-        if(x+w < SCREEN_WIDTH) {
-            x = 0.0f;
+        if(context.getPlayer().alive()) {
+            x += SPEED * context.getDeltaTime();
+            if(x+w < SCREEN_WIDTH) {
+                x = 0.0f;
+            }
         }
     }
 }
@@ -98,6 +119,9 @@ class Pipe : Model {
 
     override void update(Context context) {
         x += SPEED * context.getDeltaTime();
+        if(context.getPlayer().collidesWith(this)) {
+            context.getPlayer().kill();
+        }
     }
 }
 
@@ -118,14 +142,16 @@ final class Pipes {
     }
 
     void update(Context context) {
-        topPipe.update(context);
-        botPipe.update(context);
-        if(topPipe.x+topPipe.w < 0) {
-            topPipe.x = SCREEN_WIDTH;
-            botPipe.x = SCREEN_WIDTH;
-            float[] newY = getPipesY();
-            topPipe.y = newY[0];
-            botPipe.y = newY[1];
+        if(context.getPlayer().alive()) {
+            topPipe.update(context);
+            botPipe.update(context);
+            if(topPipe.x+topPipe.w < 0) {
+                topPipe.x = SCREEN_WIDTH;
+                botPipe.x = SCREEN_WIDTH;
+                float[] newY = getPipesY();
+                topPipe.y = newY[0];
+                botPipe.y = newY[1];
+            }
         }
     }
 
@@ -136,7 +162,7 @@ final class Pipes {
 
     float[] getPipesY() {
         float topY = uniform(-PIPE_HEIGHT/2, 0.0f);
-        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*1.5;
+        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*2;
         return [topY, botY];
     }
 }
