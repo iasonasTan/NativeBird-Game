@@ -12,5 +12,8 @@
     "stringImportPaths": [
         "res"
     ],
-    "lflags": ["-lraylib", "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11"]
+    "lflags": [
+        "./libraylib.a",
+        "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11"
+    ]
 }
