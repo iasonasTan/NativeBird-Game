@@ -48,6 +48,9 @@ class Game : Context {
 		foreach(p; pipes) {
 			p.draw((Model model) => drawTexture(model, this));
 		}
+		if(!player.alive()) {
+			drawGameOver(this);
+		}
 
 		EndDrawing();
 	}

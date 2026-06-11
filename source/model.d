@@ -68,7 +68,7 @@ final class Player : Model {
             playerKeys(context);
         }
         if(y > SCREEN_HEIGHT) {
-            // Game Over !!!
+            dead = true;
         }
     }
 

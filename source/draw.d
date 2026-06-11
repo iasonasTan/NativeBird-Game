@@ -1,7 +1,7 @@
 module draw;
 
 import std.conv;
-import raylib : DrawTexture, Colors;
+import raylib : DrawTexture, Colors, DrawText, Color;
 import model : Model;
 import game;
 
@@ -15,4 +15,8 @@ immutable float BACKGROUND_HEIGHT = SCREEN_HEIGHT;
 
 void drawTexture(Model model, Context context) {
     DrawTexture(*model.getTextureRef(context.getGameTime()), model.x.to!int, model.y.to!int, Colors.WHITE);
+}
+
+void drawGameOver(Context context) {
+    DrawText("Game Over!", SCREEN_WIDTH.to!int/2-120, SCREEN_HEIGHT.to!int/2, 50, Color(222, 41, 16, 255));
 }
