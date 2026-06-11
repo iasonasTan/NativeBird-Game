@@ -1,17 +1,16 @@
 {
-	"description": "A Flappy Bird game implementation with Dlang.",
-	"dependencies": {
-		"raylib-d": "~>6.0.1"
-	},
-	"libs": [
-		"raylib"
-	], "authors": [
-		"iasonas"
-	],
-	"copyright": "Copyright © 2026, iasonas",
-	"license": "GPL-3.0-only",
-	"name": "native_bird",
-	"stringImportPaths": [
-		"res"
-	]
+    "description": "A Flappy Bird game implementation with Dlang.",
+    "copyright": "Copyright © 2026, iasonas",
+    "license": "GPL-3.0-only",
+    "name": "native_bird",
+    "dependencies": {
+        "raylib-d": "~>6.0.1"
+    },
+    "authors": [
+        "iasonas"
+    ],
+    "stringImportPaths": [
+        "res"
+    ],
+    "lflags": ["-lraylib", "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11"]
 }
