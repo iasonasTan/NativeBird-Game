@@ -7,6 +7,7 @@ import draw;
 import model : Model;
 import model;
 import keys;
+import textures;
 
 interface Context {
 	float getGameTime();
@@ -18,12 +19,12 @@ class Game : Context {
 	float gameTime = 0.0f;
 	Player player;
 	Background background;
-	Pipes pipes1;
+	Pipes[] pipes;
 
-	this(Image[] playerImages, Image backgroundImage, Image[] pipeImages) {
- 		player = new Player(playerImages);
-		background = new Background(backgroundImage);
-		pipes1 = Pipes(new TopPipe(pipeImages[0]), new BotPipe(pipeImages[1]));
+	this() {
+ 		player = new Player();
+		background = new Background();
+		pipes = [new Pipes(), new Pipes(+SCREEN_WIDTH/2)];
 	}
 
 	override float getGameTime() {
@@ -42,20 +43,24 @@ class Game : Context {
 		BeginDrawing();
 		ClearBackground(Colors.RAYWHITE);
 
-		// Player stuff
 		drawTexture(background, this);
 		drawTexture(player, this);
-		drawTexture(pipes1.topPipe, this);
-		drawTexture(pipes1.botPipe, this);
+		foreach(p; pipes) {
+			p.draw((Model model) => drawTexture(model, this));
+		}
 
 		EndDrawing();
 	}
 
 	void update() {
+		if(IsKeyDown(KeyboardKey.KEY_ENTER)) {
+			return;
+		}
 		player.update(this);
 		background.update(this);
-		pipes1.topPipe.update(this);
-		pipes1.botPipe.update(this);
+		foreach(p; pipes) {
+			p.update(this);
+		}
 		gameTime += GetFrameTime();
 	}
 }
@@ -63,11 +68,9 @@ class Game : Context {
 void main() {
     InitWindow(1000, 800, "Местная птица");
     SetTargetFPS(60);
+	loadGameTextures();
 
-	Image[] playerImages = [LoadImage("res/bird1.png"), LoadImage("res/bird2.png")];
-	Image backgroundImage = LoadImage("res/background.png");
-	Image[] pipeImages = [LoadImage("res/pipe_top.png"), LoadImage("res/pipe_bot.png")];
-	Game ctx = new Game(playerImages, backgroundImage, pipeImages);
+	Game ctx = new Game();
     while (!WindowShouldClose()) {
         ctx.update();
 		ctx.draw();

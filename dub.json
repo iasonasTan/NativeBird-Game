@@ -10,5 +10,8 @@
 	],
 	"copyright": "Copyright © 2026, iasonas",
 	"license": "GPL-3.0-only",
-	"name": "native_bird"
+	"name": "native_bird",
+	"stringImportPaths": [
+		"res"
+	]
 }

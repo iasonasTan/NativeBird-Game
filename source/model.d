@@ -1,11 +1,12 @@
 module model;
 
-import std.stdio;
+import std.random;
 import std.conv;
 import draw;
 import raylib;
 import game;
 import keys;
+import textures;
 
 immutable float GRAVITY = 100.0f;
 immutable float FLAP_STRENGTH = 100.0f;
@@ -14,57 +15,43 @@ abstract class Model {
     float x, y;
     float w, h;
 
-    Texture2D[] textures;
+    Texture2D*[] texturePtrs;
     int textureIdx = 0;
     const float textureDelta = 0.5f;
     float lastTextureSwitch  = 0.0f;
 
-    this(float x, float y, float w, float h, Image[] images) {
+    this(float x, float y, float w, float h, Texture2D*[] texturePtrs) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        foreach(image; images) {
-            textures ~= imageToTexture(image);
-        }
-    }
-
-    this(float x, float y, Image[] images) {
-        this(x, y, MODEL_SIZE, MODEL_SIZE, images);
+        this.texturePtrs = texturePtrs;
     }
 
     void update(Context context) {
         // blank
     }
 
-    Texture2D getTexture(float gameTime) {
-        if(textures.length != 1 && lastTextureSwitch+textureDelta < gameTime) {
+    Texture2D* getTextureRef(float gameTime) {
+        if(texturePtrs.length != 1 && lastTextureSwitch+textureDelta < gameTime) {
             textureIdx++;
-            if(textureIdx >= textures.length) {
+            if(textureIdx >= texturePtrs.length) {
                 textureIdx = 0;
             }
             lastTextureSwitch = gameTime;
         }
-        
-        return textures[textureIdx];
-    }
-
-    final Texture2D imageToTexture(Image image) {
-        ImageResize(&image, w.to!int, h.to!int);
-        Texture2D texture = LoadTextureFromImage(image);
-        UnloadImage(image);
-        return texture;
+        return texturePtrs[textureIdx];
     }
 }
 
 final class Player : Model {
-    Texture2D textureDead;
+    Texture2D* textureDead;
     bool dead = false;
     float velocityY = 0.1f;
 
-    this(Image[] images) {
-        super(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2,images);
-        textureDead = imageToTexture(LoadImage("res/bird_dead.png"));
+    this() {
+        super(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE, [&BIRD_1, &BIRD_2]);
+        textureDead = &BIRD_D;
     }
 
     override void update(Context context) {
@@ -78,11 +65,11 @@ final class Player : Model {
         velocityY = -FLAP_STRENGTH;
     }
 
-    override Texture2D getTexture(float gameTime) {
+    override Texture2D* getTextureRef(float gameTime) {
         if(dead) {
             return textureDead;
         } else {
-            return super.getTexture(gameTime);
+            return super.getTextureRef(gameTime);
         }
     }
 }
@@ -90,8 +77,8 @@ final class Player : Model {
 final class Background : Model {
     immutable float SPEED = -75.0f;
 
-    this(Image image) {
-        super(0.0f, 0.0f, SCREEN_WIDTH*3, SCREEN_HEIGHT*1, [image]);
+    this() {
+        super(0.0f, 0.0f, SCREEN_WIDTH*3, SCREEN_HEIGHT*1, [&BACKGR]);
     }
 
     override void update(Context context) {
@@ -102,49 +89,54 @@ final class Background : Model {
     }
 }
 
-abstract class Pipe : Model {
+class Pipe : Model {
     immutable float SPEED = -100.0f;
-    immutable float PIPE_WIDTH = MODEL_SIZE*3;
-    immutable float PIPE_HEIGHT= MODEL_SIZE*8;
 
-    this(Image image) {
-        super(SCREEN_WIDTH*1, getRandomY(), PIPE_WIDTH, PIPE_HEIGHT, [image]);
+    this(float y, Texture2D* texture) {
+        super(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT, [texture]);
     }
 
     override void update(Context context) {
         x += SPEED * context.getDeltaTime();
-        if(x+w < 0) {
-            x = SCREEN_WIDTH;
-            y = getRandomY();
+    }
+}
+
+final class Pipes {
+    Pipe topPipe;
+    Pipe botPipe;
+
+    this() {
+        this(0);
+    }
+
+    this(float offsetX) {
+        float[] newY = getPipesY();
+        topPipe = new Pipe(newY[0], &PIPE_T);
+        botPipe = new Pipe(newY[1], &PIPE_B);
+        topPipe.x += offsetX;
+        botPipe.x += offsetX;
+    }
+
+    void update(Context context) {
+        topPipe.update(context);
+        botPipe.update(context);
+        if(topPipe.x+topPipe.w < 0) {
+            topPipe.x = SCREEN_WIDTH;
+            botPipe.x = SCREEN_WIDTH;
+            float[] newY = getPipesY();
+            topPipe.y = newY[0];
+            botPipe.y = newY[1];
         }
     }
 
-    abstract float getRandomY();
-}
-
-import std.random;
-
-final class TopPipe : Pipe {
-    this(Image image) {
-        super(image);
+    void draw(void delegate(Model model) drawer) {
+        drawer(topPipe);
+        drawer(botPipe);
     }
 
-    override float getRandomY() {
-        return uniform(-PIPE_HEIGHT+MODEL_SIZE, 0.0f);
+    float[] getPipesY() {
+        float topY = uniform(-PIPE_HEIGHT/2, 0.0f);
+        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*1.5;
+        return [topY, botY];
     }
-}
-
-final class BotPipe : Pipe {
-    this(Image image) {
-        super(image);
-    }
-
-    override float getRandomY() {
-        return uniform(SCREEN_HEIGHT/2+MODEL_SIZE, SCREEN_HEIGHT-MODEL_SIZE);
-    }
-}
-
-struct Pipes {
-    TopPipe topPipe;
-    BotPipe botPipe;
 }
