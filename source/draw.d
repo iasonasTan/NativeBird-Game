@@ -18,5 +18,5 @@ void drawTexture(Model model, Context context) {
 }
 
 void drawGameOver(Context context) {
-    DrawText("Game Over!", SCREEN_WIDTH.to!int/2-120, SCREEN_HEIGHT.to!int/2, 50, Color(222, 41, 16, 255));
+    DrawText("Ты проиграл!", SCREEN_WIDTH.to!int/2-120, SCREEN_HEIGHT.to!int/2, 50, Color(222, 41, 16, 255));
 }
