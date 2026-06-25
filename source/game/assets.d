@@ -21,37 +21,25 @@ Texture2D PIPE_B;
 void loadGameTextures() {
     BIRD_1 = imageToTexture(
         LoadImageFromMemory(".png", BIRD_1_BYTES.ptr, cast(int)BIRD_1_BYTES.length),
-        MODEL_SIZE,
-        MODEL_SIZE
-    );
+        MODEL_SIZE,MODEL_SIZE);
     
     BIRD_2 = imageToTexture(
         LoadImageFromMemory(".png", BIRD_2_BYTES.ptr, cast(int)BIRD_2_BYTES.length), 
-        MODEL_SIZE, 
-        MODEL_SIZE
-    );
+        MODEL_SIZE, MODEL_SIZE);
     
     BIRD_D = imageToTexture(
         LoadImageFromMemory(".png", BIRD_D_BYTES.ptr, cast(int)BIRD_D_BYTES.length), 
-        MODEL_SIZE, 
-        MODEL_SIZE
-    );
+        MODEL_SIZE, MODEL_SIZE);
     
     BACKGR = imageToTexture(
         LoadImageFromMemory(".png", BACKGR_BYTES.ptr, cast(int)BACKGR_BYTES.length), 
-        BACKGROUND_WIDTH, 
-        BACKGROUND_HEIGHT
-    );
+        BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
     
     PIPE_T = imageToTexture(
         LoadImageFromMemory(".png", PIPE_T_BYTES.ptr, cast(int)PIPE_T_BYTES.length), 
-        PIPE_WIDTH, 
-        PIPE_HEIGHT
-    );
+        PIPE_WIDTH, PIPE_HEIGHT);
     
     PIPE_B = imageToTexture(
         LoadImageFromMemory(".png", PIPE_B_BYTES.ptr, cast(int)PIPE_B_BYTES.length), 
-        PIPE_WIDTH, 
-        PIPE_HEIGHT
-    );
+        PIPE_WIDTH, PIPE_HEIGHT);
 }

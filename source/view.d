@@ -9,6 +9,7 @@ import assets;
 abstract class View {
     protected Rectangle bounds = Rectangle(0, 0, 0, 0);
     protected float m = 10.0f, p = 5.0f; // margin, padding
+    private bool visible = true;
 
     this(float w, float h) {
         bounds.w = w;
@@ -40,6 +41,9 @@ abstract class View {
     public void draw() {}
     public void update() {}
     public void revalidate() {}
+
+    public void setVisible(bool v) { visible = v; }
+    public bool isVisible() { return visible; }
 
     public int getX() { return cast(int)bounds.x; }
     public int getY() { return cast(int)bounds.y; }

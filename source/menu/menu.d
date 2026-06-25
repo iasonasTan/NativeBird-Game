@@ -6,29 +6,21 @@ import screen;
 import view;
 import game.game;
 import menu.assets;
+import draw;
 
 void initMenu() {
     loadBackground();
 }
 
-final class Menu : Screen {
-    public bool handleThis = true;
-    private Game game;
-    private View[] views;
+final class MainMenu : AbstractScreen {
     private Texture2D* backgroundRef;
 
     this() {
-        this.game = new Game(this);
-        initializeViews();
+        super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
         backgroundRef = &menuBackground;
     }
 
-    private void startGame() {
-        handleThis = false;
-        game.initializeObjects();
-    }
-
-    private void initializeViews() {
+    protected override View[] uiBuild() {
         View title = new Label("Местная птица", 40.0f);
         title.setPos(100.0f, 100.0f);
         title.centerHorizontally();
@@ -36,7 +28,8 @@ final class Menu : Screen {
         auto play = new Button("Играть", 32.0f);
         play.below(title);
         play.action = delegate() {
-            startGame();
+            setChildVisible(true);
+            setVisible(false);
         };
 
         auto exit = new Button("Выход", 32.0f);
@@ -46,27 +39,13 @@ final class Menu : Screen {
             .exit(0);
         };
         
-        views ~= [title, play, exit];
+        return [title, play, exit];
     }
 
-    public override void draw() {
-        if(handleThis) {
-            DrawTexture(*backgroundRef, 0, 0, Colors.WHITE);
-            foreach(v; views) {
-                v.draw();
-            }
-        } else {
-            game.draw();
-        }
+    public override void safeDraw() {
+        DrawTexture(*backgroundRef, 0, 0, Colors.WHITE);
     }
 
-    public override void update() {
-        if(handleThis) {
-            foreach(v; views) {
-                v.update();
-            }
-        } else {
-            game.update();
-        }
+    public override void safeUpdate() {
     }
 }
