@@ -1,5 +1,6 @@
 module menu.menu;
 
+import core.stdc.stdlib : exit;
 import raylib;
 import screen;
 import menu.view;
@@ -31,6 +32,10 @@ final class Menu : Screen {
 
         auto exit = new Button("Выход", 22.0f);
         exit.below(play);
+        exit.action = delegate() {
+            CloseWindow();
+            .exit(0);
+        };
         
         views ~= [title, play, exit];
     }
