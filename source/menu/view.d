@@ -7,35 +7,34 @@ import draw;
 import assets;
 
 abstract class View {
-    protected float x, y; // xpos, ypos
-    protected float w, h; // width, height
+    protected Rectangle bounds = Rectangle(0, 0, 0, 0);
     protected float m = 10.0f, p = 10.0f; // margin, padding
 
     this(float w, float h) {
-        this.w = w;
-        this.h = h;
+        bounds.w = w;
+        bounds.h = h;
     }
 
     public void setPos(float x, float y) {
-        this.x = x;
-        this.y = y;
+        bounds.x = x;
+        bounds.y = y;
     }
 
     public void above(View other) {
-        this.y =  other.y;
-        this.y -= other.h;
-        this.y -= other.m + this.m;
-        this.x =  other.x;
+        bounds.y =  other.bounds.y;
+        bounds.y -= other.bounds.h;
+        bounds.y -= other.m + this.m;
+        bounds.x =  other.bounds.x;
     }
 
     public void below(View other) {
-        this.y = other.y + other.h;
-        this.y += other.m + this.m;
-        this.x = other.x;
+        bounds.y = other.bounds.y + other.bounds.h;
+        bounds.y += other.m + this.m;
+        bounds.x = other.bounds.x;
     }
 
     public void centerHorizontally() {
-        this.x = SCREEN_WIDTH /2 - w /2;
+        bounds.x = SCREEN_WIDTH /2 - bounds.w /2;
     }
 
     public void draw() {   
@@ -67,8 +66,8 @@ class Label : View {
 
     public override void revalidate() {
         float[] size = calculateSize();
-        w = size[0];
-        h = size[1];
+        bounds.w = size[0];
+        bounds.h = size[1];
         super.revalidate();
     }
 
@@ -83,7 +82,7 @@ class Label : View {
     }
 
     public override void draw() {
-        Vector2 position = Vector2(x+p, y+p);
+        Vector2 position = Vector2(bounds.x+p, bounds.y+p);
         DrawTextEx(font, c_txt(), position, fontSize, p, foreground);
     }
 }
@@ -96,12 +95,9 @@ class Button : Label {
     }
 
     public override void update() {
-        if(IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) {
-            Rectangle clickPos = Rectangle(GetMouseX(), GetMouseY(), 0, 0);
-            Rectangle thisBody = Rectangle(x, y, w, h);
-            if(CheckCollisionRecs(clickPos, thisBody)) {
-                action();
-            }
+        if(IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) &&
+                CheckCollisionPointRec(GetMousePosition(), bounds)) {
+            action();
         }
     }
 }
