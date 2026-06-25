@@ -8,7 +8,7 @@ import assets;
 
 abstract class View {
     protected Rectangle bounds = Rectangle(0, 0, 0, 0);
-    protected float m = 10.0f, p = 10.0f; // margin, padding
+    protected float m = 20.0f, p = 10.0f; // margin, padding
 
     this(float w, float h) {
         bounds.w = w;
@@ -48,12 +48,37 @@ abstract class View {
     public void revalidate() {
 
     }
+
+    public int getX() {
+        return cast(int)bounds.x;
+    }
+
+    public int getY() {
+        return cast(int)bounds.y;
+    }
+
+    public int getWidth() {
+        return cast(int)bounds.width;
+    }
+
+    public int getHeight() {
+        return cast(int)bounds.height;
+    }
+
+    public int margin() {
+        return cast(int)m;
+    }
+
+    public int padding() {
+        return cast(int)p;
+    }
 }
 
 class Label : View {
     private float fontSize;
     private string text;
-    private Color foreground = Colors.BLACK;
+    private Color background = Colors.BLACK;
+    private Color foreground = Colors.WHITE;
     private Font font;
 
     this(string txt, float fsize) {
@@ -62,6 +87,14 @@ class Label : View {
         font = loadMainFont();
         float[] size = calculateSize();
         super(size[0], size[1]);
+    }
+
+    public void setForeground(Color fg) {
+        foreground = fg;
+    }
+
+    public void setBackground(Color bg) {
+        background = bg;
     }
 
     public override void revalidate() {
@@ -78,12 +111,13 @@ class Label : View {
 
     private float[] calculateSize() {
         Vector2 textSize = MeasureTextEx(font, c_txt(), fontSize, p);
-        return [textSize.x, textSize.y];
+        return [textSize.x+p*2, textSize.y+p*2];
     }
 
     public override void draw() {
-        Vector2 position = Vector2(bounds.x+p, bounds.y+p);
-        DrawTextEx(font, c_txt(), position, fontSize, p, foreground);
+        const Vector2 position = Vector2(bounds.x+padding, bounds.y+padding);
+        DrawRectangle(getX, getY,getWidth, getHeight, background);
+        DrawTextEx(font, c_txt, position, fontSize, 0, foreground);
     }
 }
 
@@ -92,6 +126,12 @@ class Button : Label {
 
     this(string txt, float fontSize) {
         super(txt, fontSize);
+    }
+
+    public override void draw() {
+        super.draw();
+        Vector2 position = Vector2(bounds.x+p, bounds.y+p);
+        drawTextUnderline(font, c_txt, position, fontSize, 0, foreground, 2);
     }
 
     public override void update() {

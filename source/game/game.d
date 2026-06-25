@@ -5,7 +5,7 @@ import game.draw;
 import game.model : Model;
 import game.model;
 import game.keys;
-import game.textures;
+import game.assets;
 import screen;
 import draw;
 

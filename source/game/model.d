@@ -6,7 +6,7 @@ import std.conv;
 import game.draw;
 import game.game;
 import game.keys;
-import game.textures;
+import game.assets;
 import draw;
 
 immutable float GRAVITY = 100.0f;

@@ -4,15 +4,22 @@ import core.stdc.stdlib : exit;
 import raylib;
 import screen;
 import menu.view;
+import menu.assets;
+
+void initMenu() {
+    loadBackground();
+}
 
 final class Menu : Screen {
     private Screen game;
     private View[] views;
     private bool handleThis = true;
+    private Texture2D* backgroundRef;
 
     this(Screen game) {
         this.game = game;
         initializeViews();
+        backgroundRef = &menuBackground;
     }
 
     private void startGame() {
@@ -20,17 +27,17 @@ final class Menu : Screen {
     }
 
     private void initializeViews() {
-        View title = new Label("Местная птица", 30.0f);
+        View title = new Label("Местная птица", 40.0f);
         title.setPos(100.0f, 100.0f);
         title.centerHorizontally();
         
-        auto play = new Button("Играть", 22.0f);
+        auto play = new Button("Играть", 32.0f);
         play.below(title);
         play.action = delegate() {
             startGame();
         };
 
-        auto exit = new Button("Выход", 22.0f);
+        auto exit = new Button("Выход", 32.0f);
         exit.below(play);
         exit.action = delegate() {
             CloseWindow();
@@ -42,7 +49,7 @@ final class Menu : Screen {
 
     public override void draw() {
         if(handleThis) {
-            ClearBackground(Colors.RAYWHITE);
+            DrawTexture(*backgroundRef, 0, 0, Colors.WHITE);
             foreach(v; views) {
                 v.draw();
             }
