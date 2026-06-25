@@ -1,9 +1,9 @@
-module textures;
+module game.textures;
 
 import raylib;
-import assets;
 import std.conv;
-import draw;
+import game.assets;
+import game.draw;
 
 Texture2D BIRD_1;
 Texture2D BIRD_2;

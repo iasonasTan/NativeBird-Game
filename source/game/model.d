@@ -1,12 +1,13 @@
-module model;
+module game.model;
 
+import raylib;
 import std.random;
 import std.conv;
+import game.draw;
+import game.game;
+import game.keys;
+import game.textures;
 import draw;
-import raylib;
-import game;
-import keys;
-import textures;
 
 immutable float GRAVITY = 100.0f;
 immutable float FLAP_STRENGTH = 100.0f;

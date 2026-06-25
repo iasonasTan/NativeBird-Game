@@ -1,82 +1,25 @@
-module game;
+module main;
 
 import raylib;
-import std.stdio;
-import std.conv;
+import game.game;
+import menu.menu;
+import screen;
 import draw;
-import model : Model;
-import model;
-import keys;
-import textures;
-
-interface Context {
-	float getGameTime();
-	float getDeltaTime();
-	Player getPlayer();
-}
-
-class Game : Context {
-	float gameTime = 0.0f;
-	Player player;
-	Background background;
-	Pipes[] pipes;
-
-	this() {
- 		player = new Player();
-		background = new Background();
-		pipes = [new Pipes(), new Pipes(+SCREEN_WIDTH/2)];
-	}
-
-	override float getGameTime() {
-		return gameTime;
-	}
-
-	override Player getPlayer() {
-		return player;
-	}
-
-	override float getDeltaTime() {
-		return GetFrameTime();
-	}
-
-	void draw() {
-		BeginDrawing();
-		ClearBackground(Colors.RAYWHITE);
-
-		drawTexture(background, this);
-		drawTexture(player, this);
-		foreach(p; pipes) {
-			p.draw((Model model) => drawTexture(model, this));
-		}
-		if(!player.alive()) {
-			drawGameOver(this);
-		}
-
-		EndDrawing();
-	}
-
-	void update() {
-		if(IsKeyDown(KeyboardKey.KEY_ENTER)) {
-			return;
-		}
-		player.update(this);
-		background.update(this);
-		foreach(p; pipes) {
-			p.update(this);
-		}
-		gameTime += GetFrameTime();
-	}
-}
 
 void main() {
-    InitWindow(1000, 800, "Местная птица");
+    InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
     SetTargetFPS(60);
-	loadGameTextures();
+	initGame();
 
-	Game ctx = new Game();
+	Screen menu = new Menu(new Game());
     while (!WindowShouldClose()) {
-        ctx.update();
-		ctx.draw();
+        // Update
+        menu.update();
+
+        // Draw
+        BeginDrawing();
+		menu.draw();
+        EndDrawing();
     }
     CloseWindow();
 }

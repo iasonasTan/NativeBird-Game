@@ -1,8 +1,8 @@
-module keys;
+module game.keys;
 
 import raylib;
-import model;
-import game;
+import game.model;
+import game.game;
 
 void playerKeys(Context context) {
     if(IsKeyDown(KeyboardKey.KEY_SPACE)) {

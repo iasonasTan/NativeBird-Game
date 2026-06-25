@@ -1,8 +1,25 @@
 module assets;
 
-immutable ubyte[] BIRD_1_BYTES = cast(immutable ubyte[]) import("bird1.png");
-immutable ubyte[] BIRD_2_BYTES = cast(immutable ubyte[]) import("bird2.png");
-immutable ubyte[] BIRD_D_BYTES = cast(immutable ubyte[]) import("bird_dead.png");
-immutable ubyte[] BACKGR_BYTES = cast(immutable ubyte[]) import("background.png");
-immutable ubyte[] PIPE_T_BYTES = cast(immutable ubyte[]) import("pipe_top.png");
-immutable ubyte[] PIPE_B_BYTES = cast(immutable ubyte[]) import("pipe_bot.png");
+import raylib;
+
+immutable ubyte[] MAIN_FONT_BYTES = cast(immutable ubyte[]) import("jura_bold.ttf");
+
+Font loadMainFont() {
+    int[] codepoints;
+    for (int i = 32; i <= 126; i++) {
+        codepoints ~= i;
+    }
+    for (int i = 0x0400; i <= 0x04FF; i++) {
+        codepoints ~= i;
+    }
+
+    const char* fileType = ".ttf"; 
+    return LoadFontFromMemory(
+        fileType, 
+        MAIN_FONT_BYTES.ptr, 
+        cast(int)MAIN_FONT_BYTES.length, 
+        32, 
+        codepoints.ptr, 
+        cast(int)codepoints.length
+    );
+}
