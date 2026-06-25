@@ -173,8 +173,8 @@ final class Pipes {
             topPipe.update(context);
             botPipe.update(context);
             if(topPipe.x+topPipe.w < 0) {
-                topPipe.dx(SCREEN_WIDTH);
-                botPipe.dx(SCREEN_WIDTH);
+                topPipe.dx(SCREEN_WIDTH+topPipe.w);
+                botPipe.dx(SCREEN_WIDTH+botPipe.w);
                 float[] newY = getPipesY();
                 topPipe.dy(newY[0]-topPipe.y);
                 botPipe.dy(newY[1]-botPipe.y);
