@@ -176,8 +176,8 @@ final class Pipes {
                 topPipe.dx(SCREEN_WIDTH);
                 botPipe.dx(SCREEN_WIDTH);
                 float[] newY = getPipesY();
-                topPipe.dy(topPipe.y-newY[0]);
-                botPipe.dy(botPipe.y-newY[1]);
+                topPipe.dy(newY[0]-topPipe.y);
+                botPipe.dy(newY[1]-botPipe.y);
             }
         }
     }
