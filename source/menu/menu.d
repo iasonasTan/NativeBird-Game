@@ -3,7 +3,8 @@ module menu.menu;
 import core.stdc.stdlib : exit;
 import raylib;
 import screen;
-import menu.view;
+import view;
+import game.game;
 import menu.assets;
 
 void initMenu() {
@@ -11,19 +12,20 @@ void initMenu() {
 }
 
 final class Menu : Screen {
-    private Screen game;
+    public bool handleThis = true;
+    private Game game;
     private View[] views;
-    private bool handleThis = true;
     private Texture2D* backgroundRef;
 
-    this(Screen game) {
-        this.game = game;
+    this() {
+        this.game = new Game(this);
         initializeViews();
         backgroundRef = &menuBackground;
     }
 
     private void startGame() {
         handleThis = false;
+        game.initializeObjects();
     }
 
     private void initializeViews() {

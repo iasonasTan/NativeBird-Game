@@ -5,7 +5,6 @@ import std.random;
 import std.conv;
 import game.draw;
 import game.game;
-import game.keys;
 import game.assets;
 import draw;
 
@@ -13,8 +12,8 @@ immutable float GRAVITY = 100.0f;
 immutable float FLAP_STRENGTH = 100.0f;
 
 abstract class Model {
-    float x, y;
-    float w, h;
+    public float x, y;
+    public float w, h;
 
     Texture2D*[] texturePtrs;
     int textureIdx = 0;
@@ -65,8 +64,8 @@ final class Player : Model {
         float dt = context.getDeltaTime();
         velocityY += GRAVITY * dt;
         y += velocityY * dt;
-        if(!dead) {
-            playerKeys(context);
+        if(!dead && IsKeyDown(KeyboardKey.KEY_SPACE)) {
+            context.getPlayer().flap(context);
         }
         if(y > SCREEN_HEIGHT) {
             dead = true;

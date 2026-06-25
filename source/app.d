@@ -10,10 +10,11 @@ import menu.menu;
 void main() {
     InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
     SetTargetFPS(60);
+    SetExitKey(KeyboardKey.KEY_NULL);
 	initGame();
     initMenu();
 
-	Screen menu = new Menu(new Game());
+	Screen menu = new Menu();
     while (!WindowShouldClose()) {
         // Update
         menu.update();

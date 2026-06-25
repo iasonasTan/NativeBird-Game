@@ -16,15 +16,3 @@ immutable float BACKGROUND_HEIGHT = SCREEN_HEIGHT;
 void drawTexture(Model model, Context context) {
     DrawTexture(*model.getTextureRef(context.getGameTime()), model.x.to!int, model.y.to!int, Colors.WHITE);
 }
-
-const Vector2 gameOverTextPos = Vector2(SCREEN_WIDTH/2-120, SCREEN_HEIGHT/2);
-const Color gameOverTextColor = Color(222, 41, 16, 255);
-Font font;
-
-void initializeDraw() {
-    font = loadMainFont();
-}
-
-void drawGameOver(Context context) {
-    DrawTextEx(font, "Игра закончена!", gameOverTextPos, 50, 1, gameOverTextColor);
-}

@@ -1,4 +1,4 @@
-module menu.view;
+module view;
 
 import raylib;
 import std.string : toStringz;
@@ -8,7 +8,7 @@ import assets;
 
 abstract class View {
     protected Rectangle bounds = Rectangle(0, 0, 0, 0);
-    protected float m = 20.0f, p = 10.0f; // margin, padding
+    protected float m = 10.0f, p = 5.0f; // margin, padding
 
     this(float w, float h) {
         bounds.w = w;
@@ -34,44 +34,19 @@ abstract class View {
     }
 
     public void centerHorizontally() {
-        bounds.x = SCREEN_WIDTH /2 - bounds.w /2;
+        bounds.x = SCREEN_WIDTH /2 -bounds.w /2;
     }
 
-    public void draw() {   
-    
-    }
+    public void draw() {}
+    public void update() {}
+    public void revalidate() {}
 
-    public void update() {
-    
-    }
-
-    public void revalidate() {
-
-    }
-
-    public int getX() {
-        return cast(int)bounds.x;
-    }
-
-    public int getY() {
-        return cast(int)bounds.y;
-    }
-
-    public int getWidth() {
-        return cast(int)bounds.width;
-    }
-
-    public int getHeight() {
-        return cast(int)bounds.height;
-    }
-
-    public int margin() {
-        return cast(int)m;
-    }
-
-    public int padding() {
-        return cast(int)p;
-    }
+    public int getX() { return cast(int)bounds.x; }
+    public int getY() { return cast(int)bounds.y; }
+    public int getWidth() { return cast(int)bounds.width; }
+    public int getHeight() { return cast(int)bounds.height; }
+    public int margin() { return cast(int)m; }
+    public int padding() { return cast(int)p; }
 }
 
 class Label : View {
@@ -116,7 +91,7 @@ class Label : View {
 
     public override void draw() {
         const Vector2 position = Vector2(bounds.x+padding, bounds.y+padding);
-        DrawRectangle(getX, getY,getWidth, getHeight, background);
+        DrawRectangle(getX, getY, getWidth, getHeight, background);
         DrawTextEx(font, c_txt, position, fontSize, 0, foreground);
     }
 }

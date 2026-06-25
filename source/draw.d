@@ -5,6 +5,11 @@ import raylib;
 immutable float SCREEN_WIDTH  = 1000.0f;
 immutable float SCREEN_HEIGHT = 800.0f;
 
+void drawRectangle(Rectangle rectangle, Color color) {
+    DrawRectangle(cast(int)rectangle.x, cast(int)rectangle.y, 
+        cast(int)rectangle.width, cast(int)rectangle.height, color);
+}
+
 void drawTextUnderlined(Font font, const char *text, Vector2 position, float fontSize, 
         float spacing, Color tint, float lineThickness) {
 
