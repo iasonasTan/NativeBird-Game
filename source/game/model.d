@@ -12,33 +12,33 @@ immutable float GRAVITY = 100.0f;
 immutable float FLAP_STRENGTH = 100.0f;
 
 abstract class Model {
-    public float x, y;
-    public float w, h;
+    private Rectangle bounds;
+    private Rectangle hitbox;
+    private Texture2D*[] texturePtrs;
+    
+    private int textureIdx = 0;
+    private const float textureDelta = 0.5f;
+    private float lastTextureSwitch  = 0.0f;
 
-    Texture2D*[] texturePtrs;
-    int textureIdx = 0;
-    const float textureDelta = 0.5f;
-    float lastTextureSwitch  = 0.0f;
-
-    this(float x, float y, float w, float h, Texture2D*[] texturePtrs) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+    this(Rectangle bounds, Rectangle hitbox, Texture2D*[] texturePtrs) {
+        this.bounds = bounds;
+        this.hitbox = hitbox;
         this.texturePtrs = texturePtrs;
     }
 
-    bool collidesWith(Model other) {
+    public bool collidesWith(Model other) {
         return
-            this.x + this.w > other.x && this.x < other.x + other.w &&
-            this.y + this.h > other.y && this.y < other.y + other.h;
+            this.hitbox.x + this.hitbox.w  > other.hitbox.x &&
+            this.hitbox.x < other.hitbox.x + other.hitbox.w &&
+            this.hitbox.y + this.hitbox.h  > other.hitbox.y &&
+            this.hitbox.y < other.hitbox.y + other.hitbox.h;
     }
 
-    void update(Context context) {
+    public void update(Context context) {
         // blank
     }
 
-    Texture2D* getTextureRef(float gameTime) {
+    public Texture2D* getTextureRef(float gameTime) {
         if(texturePtrs.length != 1 && lastTextureSwitch+textureDelta < gameTime) {
             textureIdx++;
             if(textureIdx >= texturePtrs.length) {
@@ -48,22 +48,45 @@ abstract class Model {
         }
         return texturePtrs[textureIdx];
     }
+
+    public final float x() { return bounds.x; }
+    public final float y() { return bounds.y; }
+    public final float w() { return bounds.width; }
+    public final float h() { return bounds.height; }
+
+    public final void dx(float d) {
+        bounds.x += d;
+        hitbox.x += d;
+    }
+    
+    public final void dy(float d) {
+        bounds.y += d;
+        hitbox.y += d;
+    }
+
+    public final void w(float v) { this.bounds.width = v; }
+    public final void h(float v) { this.bounds.height = v; }
+
+    public final Rectangle gbounds() { return bounds; }
+    public final Rectangle ghitbox() { return hitbox; }
 }
 
 final class Player : Model {
-    Texture2D* textureDead;
-    bool dead = false;
-    float velocityY = 0.1f;
+    private Texture2D* textureDead;
+    private bool dead = false;
+    private float velocityY = 0.1f;
 
     this() {
-        super(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE, [&BIRD_1, &BIRD_2]);
+        Rectangle bounds = Rectangle(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE);
+        Rectangle hitbox = Rectangle(bounds.x+15, bounds.y+15, bounds.width-30, bounds.height-30);
+        super(bounds, hitbox, [&BIRD_1, &BIRD_2]);
         textureDead = &BIRD_D;
     }
 
-    override void update(Context context) {
+    public override void update(Context context) {
         float dt = context.getDeltaTime();
         velocityY += GRAVITY * dt;
-        y += velocityY * dt;
+        dy(velocityY * dt);
         if(!dead && IsKeyDown(KeyboardKey.KEY_SPACE)) {
             context.getPlayer().flap(context);
         }
@@ -72,19 +95,19 @@ final class Player : Model {
         }
     }
 
-    void kill() {
+    public void kill() {
         dead = true;
     }
 
-    bool alive() {
+    public bool alive() {
         return !dead;
     }
 
-    void flap(Context context) {
+    public void flap(Context context) {
         velocityY = -FLAP_STRENGTH;
     }
 
-    override Texture2D* getTextureRef(float gameTime) {
+    public override Texture2D* getTextureRef(float gameTime) {
         if(dead) {
             return textureDead;
         } else {
@@ -94,31 +117,35 @@ final class Player : Model {
 }
 
 final class Background : Model {
-    immutable float SPEED = -75.0f;
+    private immutable float SPEED = -75.0f;
 
     this() {
-        super(0.0f, 0.0f, SCREEN_WIDTH*3, SCREEN_HEIGHT*1, [&BACKGR]);
+        Rectangle bounds = Rectangle(0.0f, 0.0f, SCREEN_WIDTH*3, SCREEN_HEIGHT*1);
+        Rectangle hitbox = Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        super(bounds, hitbox, [&BACKGR]);
     }
 
-    override void update(Context context) {
+    public override void update(Context context) {
         if(context.getPlayer().alive()) {
-            x += SPEED * context.getDeltaTime();
+            dx(SPEED * context.getDeltaTime());
             if(x+w < SCREEN_WIDTH) {
-                x = 0.0f;
+                dx(-x);
             }
         }
     }
 }
 
 class Pipe : Model {
-    immutable float SPEED = -100.0f;
+    private immutable float SPEED = -100.0f;
 
     this(float y, Texture2D* texture) {
-        super(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT, [texture]);
+        Rectangle bounds = Rectangle(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT);
+        Rectangle hitbox = Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        super(bounds, hitbox, [texture]);
     }
 
-    override void update(Context context) {
-        x += SPEED * context.getDeltaTime();
+    public override void update(Context context) {
+        dx(SPEED * context.getDeltaTime());
         if(context.getPlayer().collidesWith(this)) {
             context.getPlayer().kill();
         }
@@ -126,8 +153,8 @@ class Pipe : Model {
 }
 
 final class Pipes {
-    Pipe topPipe;
-    Pipe botPipe;
+    public Pipe topPipe;
+    public Pipe botPipe;
 
     this() {
         this(0);
@@ -137,30 +164,30 @@ final class Pipes {
         float[] newY = getPipesY();
         topPipe = new Pipe(newY[0], &PIPE_T);
         botPipe = new Pipe(newY[1], &PIPE_B);
-        topPipe.x += offsetX;
-        botPipe.x += offsetX;
+        topPipe.dx(offsetX);
+        botPipe.dx(offsetX);
     }
 
-    void update(Context context) {
+    public void update(Context context) {
         if(context.getPlayer().alive()) {
             topPipe.update(context);
             botPipe.update(context);
             if(topPipe.x+topPipe.w < 0) {
-                topPipe.x = SCREEN_WIDTH;
-                botPipe.x = SCREEN_WIDTH;
+                topPipe.dx(SCREEN_WIDTH);
+                botPipe.dx(SCREEN_WIDTH);
                 float[] newY = getPipesY();
-                topPipe.y = newY[0];
-                botPipe.y = newY[1];
+                topPipe.dy(topPipe.y-newY[0]);
+                botPipe.dy(botPipe.y-newY[1]);
             }
         }
     }
 
-    void draw(void delegate(Model model) drawer) {
+    public void draw(void delegate(Model model) drawer) {
         drawer(topPipe);
         drawer(botPipe);
     }
 
-    float[] getPipesY() {
+    public float[] getPipesY() {
         float topY = uniform(-PIPE_HEIGHT/2, 0.0f);
         float botY = topY+PIPE_HEIGHT+MODEL_SIZE*2;
         return [topY, botY];

@@ -26,6 +26,7 @@ final class Game : AbstractScreen, Context {
 	private Background background;
 	private Pipes[] pipes;
 	private Label gameOverView;
+	private bool drawDebug = false;
 
 	this(Screen parent) {
 		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), parent);
@@ -60,10 +61,20 @@ final class Game : AbstractScreen, Context {
 
 	public override void safeDraw() {
 		ClearBackground(Colors.RAYWHITE);
-		drawTexture(background, this);
-		drawTexture(player, this);
+		drawModel(background, this);
+		drawModel(player, this);
+		if(drawDebug) {
+			drawRectangle(player.gbounds, Colors.GREEN);
+			drawRectangle(player.ghitbox, Colors.RED);
+    	}
 		foreach(p; pipes) {
-			p.draw((Model model) => drawTexture(model, this));
+			p.draw(delegate(Model model) {
+				drawModel(model, this);
+				if(drawDebug) {
+					drawRectangle(model.gbounds, Colors.GREEN);
+					drawRectangle(model.ghitbox, Colors.RED);
+				}
+			});
 		}
 		if(!player.alive()) {
 			gameOverView.setVisible(true);
