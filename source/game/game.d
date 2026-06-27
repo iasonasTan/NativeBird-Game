@@ -21,12 +21,17 @@ interface Context {
 }
 
 final class Game : AbstractScreen, Context {
+	// Logic
 	private float gameTime = 0.0f;
+	private bool drawDebug = false;
+	
+	// Models
 	private Player player;
 	private Background background;
 	private Pipes[] pipes;
+
+	// Gui
 	private Label gameOverView;
-	private bool drawDebug = false;
 
 	this(Screen parent) {
 		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), parent);
@@ -44,7 +49,11 @@ final class Game : AbstractScreen, Context {
 		gameOverView.setVisible(false);
 		gameOverView.setForeground(Color(222, 41, 16, 255));
 
-		return [gameOverView];
+		Button menuButton = new Button("Показать меню.", 20.0f);
+		menuButton.setPos(0.0f, 0.0f);
+		menuButton.action = () => showMenu();
+
+		return [gameOverView, menuButton];
 	}
 
 	public void initializeObjects() {
@@ -98,9 +107,13 @@ final class Game : AbstractScreen, Context {
 			setChildVisible(true);
 		}
 		if(IsKeyPressed(KeyboardKey.KEY_ESCAPE) && player.alive()) {
-			setVisible(!isVisible());
-			setChildVisible(!getChildScreen().isVisible());
+			showMenu();
 		}
+	}
+
+	private void showMenu() {
+		setVisible(!isVisible());
+		setChildVisible(!getChildScreen().isVisible());
 	}
 }
 
