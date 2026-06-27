@@ -192,7 +192,7 @@ final class Pipes {
             float[] newY = getPipesY();
             topPipe.dy(newY[0]-topPipe.y);
             botPipe.dy(newY[1]-botPipe.y);
-            crossed = true;
+            crossed = false;
         }
     }
 
