@@ -153,6 +153,7 @@ class Pipe : Model {
 }
 
 final class Pipes {
+    private bool crossed = false;
     public Pipe topPipe;
     public Pipe botPipe;
 
@@ -172,13 +173,26 @@ final class Pipes {
         if(context.getPlayer().alive()) {
             topPipe.update(context);
             botPipe.update(context);
-            if(topPipe.x+topPipe.w < 0) {
-                topPipe.dx(SCREEN_WIDTH+topPipe.w);
-                botPipe.dx(SCREEN_WIDTH+botPipe.w);
-                float[] newY = getPipesY();
-                topPipe.dy(newY[0]-topPipe.y);
-                botPipe.dy(newY[1]-botPipe.y);
-            }
+            updatePosition();
+            updateScore(context);
+        }
+    }
+
+    private void updateScore(Context context) {
+        if(!crossed && topPipe.x+topPipe.w < context.getPlayer().gbounds.x) {
+            context.increaseScore();
+            crossed = true;
+        }
+    }
+
+    private void updatePosition() {
+        if(topPipe.x+topPipe.w < 0) {
+            topPipe.dx(SCREEN_WIDTH+topPipe.w);
+            botPipe.dx(SCREEN_WIDTH+botPipe.w);
+            float[] newY = getPipesY();
+            topPipe.dy(newY[0]-topPipe.y);
+            botPipe.dy(newY[1]-botPipe.y);
+            crossed = true;
         }
     }
 

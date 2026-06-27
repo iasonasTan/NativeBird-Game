@@ -68,6 +68,11 @@ class Label : View {
         super(size[0], size[1]);
     }
 
+    public void setText(string text) {
+        this.text = text;
+        revalidate();
+    }
+
     public void setForeground(Color fg) {
         foreground = fg;
     }

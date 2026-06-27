@@ -1,6 +1,7 @@
 module game.game;
 
 import raylib;
+import std.conv : to;
 import game.draw;
 import game.model : Model;
 import game.model;
@@ -18,12 +19,14 @@ interface Context {
 	float getGameTime();
 	float getDeltaTime();
 	Player getPlayer();
+	void increaseScore();
 }
 
 final class Game : AbstractScreen, Context {
 	// Logic
 	private float gameTime = 0.0f;
 	private bool drawDebug = false;
+	private int score = 0;
 	
 	// Models
 	private Player player;
@@ -32,6 +35,7 @@ final class Game : AbstractScreen, Context {
 
 	// Gui
 	private Label gameOverView;
+	private Label scoreView;
 
 	this(Screen parent) {
 		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), parent);
@@ -49,14 +53,19 @@ final class Game : AbstractScreen, Context {
 		gameOverView.setVisible(false);
 		gameOverView.setForeground(Color(222, 41, 16, 255));
 
-		Button menuButton = new Button("Показать меню.", 20.0f);
+		Button menuButton = new Button("Показать меню.", 25.0f);
 		menuButton.setPos(0.0f, 0.0f);
 		menuButton.action = () => showMenu();
 
-		return [gameOverView, menuButton];
+		scoreView = new Label("Счет: 0", 25.0f);
+		scoreView.centerHorizontally();
+
+		return [gameOverView, menuButton, scoreView];
 	}
 
 	public void initializeObjects() {
+		score = 0;
+		scoreView.setText("Счет: 0");
 		player = new Player();
 		background = new Background();
 		pipes = [new Pipes(), new Pipes(+SCREEN_WIDTH/2)];
@@ -114,6 +123,11 @@ final class Game : AbstractScreen, Context {
 	private void showMenu() {
 		setVisible(!isVisible());
 		setChildVisible(!getChildScreen().isVisible());
+	}
+
+	public void increaseScore() {
+		score++;
+		scoreView.setText("Счет: " ~ score.to!string);
 	}
 }
 
