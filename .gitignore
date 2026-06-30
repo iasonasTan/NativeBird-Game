@@ -10,6 +10,7 @@ libnative_bird.a
 native_bird.a
 native_bird.lib
 native_bird-test-*
+native_bird.exe
 *.exe
 *.pdb
 *.o

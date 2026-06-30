@@ -12,8 +12,20 @@
     "stringImportPaths": [
         "res"
     ],
-    "lflags": [
+    "lflags-linux": [
         "./libraylib.a",
         "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11"
+    ],
+    "sourceFiles-windows": [
+        "libs/win/raylib.lib"
+    ],
+    "libs-windows": [
+        "opengl32",
+        "gdi32",
+        "winmm",
+        "user32",
+        "shell32",
+        "msvcrt",
+        "ucrt"
     ]
 }
