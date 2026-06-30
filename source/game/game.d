@@ -2,17 +2,22 @@ module game.game;
 
 import raylib;
 import std.conv : to;
+
 import game.draw;
 import game.model : Model;
 import game.model;
 import game.assets;
-import menu.menu;
+
 import screen;
 import draw;
 import view;
+import config : getConfFilePath;
+
+private string SCORE_CONFIG_PATH;
 
 void initGame() {
     loadGameTextures();
+	SCORE_CONFIG_PATH = getConfFilePath("score");
 }
 
 interface Context {
@@ -26,7 +31,7 @@ final class Game : AbstractScreen, Context {
 	// Logic
 	private float gameTime = 0.0f;
 	private bool drawDebug = false;
-	private int score = 0;
+	private ScoreHandler scoreHandler;
 	
 	// Models
 	private Player player;
@@ -57,21 +62,23 @@ final class Game : AbstractScreen, Context {
 		menuButton.setPos(0.0f, 0.0f);
 		menuButton.action = () => showMenu();
 
-		scoreView = new Label("Счет: 0", 25.0f);
+		scoreView = new Label("", 25.0f);
 		scoreView.centerHorizontally();
 
 		return [gameOverView, menuButton, scoreView];
 	}
 
 	public void initializeObjects() {
-		score = 0;
 		scoreView.setText("Счет: 0");
 		player = new Player();
 		background = new Background();
 		pipes = [new Pipes(), new Pipes(+SCREEN_WIDTH/2)];
 		gameOverView.setVisible(false);
-		Screen child = getChildScreen();
-		PauseMenu pMenu = cast(PauseMenu)child;
+		scoreHandler = new ScoreHandler();
+		int bscore = scoreHandler.get()[1];
+		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
+
+		PauseMenu pMenu = cast(PauseMenu)getChildScreen();
 		if(pMenu !is null) {
 			pMenu.enableResume(true);
 		}
@@ -107,17 +114,21 @@ final class Game : AbstractScreen, Context {
 		}
 		gameTime += GetFrameTime();
 		if(player.y > SCREEN_HEIGHT) {
-			Screen child = getChildScreen();
-			PauseMenu pMenu = cast(PauseMenu)child;
-			if(pMenu !is null) {
-				pMenu.enableResume(false);
-			}
-			setVisible(false);
-			setChildVisible(true);
+			onGameOver();
 		}
 		if(IsKeyPressed(KeyboardKey.KEY_ESCAPE) && player.alive()) {
 			showMenu();
 		}
+	}
+
+	public void onGameOver() {
+		scoreHandler.close();
+		PauseMenu pMenu = cast(PauseMenu)getChildScreen();
+		if(pMenu !is null) {
+			pMenu.enableResume(false);
+		}
+		setVisible(false);
+		setChildVisible(true);
 	}
 
 	private void showMenu() {
@@ -126,8 +137,12 @@ final class Game : AbstractScreen, Context {
 	}
 
 	public void increaseScore() {
-		score++;
-		scoreView.setText("Счет: " ~ score.to!string);
+		import std.format : format;
+
+		scoreHandler.increaseScore();
+		int[] scores = scoreHandler.get();
+		string scoresStr = format("Счет: %d, Лучший результат: %d", scores[0], scores[1]);
+		scoreView.setText(scoresStr);
 	}
 }
 
@@ -151,8 +166,7 @@ final class PauseMenu : AbstractScreen {
 		restart.below(title);
 		restart.action = delegate() {
 			setVisible(false);
-			Screen parent = getParent();
-			Game game = cast(Game)parent;
+			Game game = cast(Game)getParent();
 			if(game !is null) {
 				game.initializeObjects();
 			}
@@ -181,5 +195,52 @@ final class PauseMenu : AbstractScreen {
 	}
 
 	public override void safeUpdate() {
+	}
+}
+
+import std.file : exists, isFile;
+import std.stdio : File;
+
+final class ScoreHandler {
+	private int score, bestScore;
+	private bool saveOnClose = false;
+
+	this() {
+		score = bestScore = 0;
+		loadFromFile();
+	}
+
+	public void loadFromFile() {
+		import std.string : chomp;
+
+		if(!exists(SCORE_CONFIG_PATH) || !isFile(SCORE_CONFIG_PATH)) {
+			return;
+		}
+		File file = File(SCORE_CONFIG_PATH, "r");
+		string bestScoreStr = file.readln();
+		if(bestScoreStr !is null) {
+			bestScore = bestScoreStr.chomp().to!int;
+		}
+		file.close();
+	}
+
+	public void increaseScore() {
+		score++;
+		if(score > bestScore) {
+			bestScore = score;
+			saveOnClose = true;
+		}
+	}
+
+	public void close() {
+		if(saveOnClose) {
+			File file = File(SCORE_CONFIG_PATH, "w");
+			file.writeln(score.to!string);
+			file.close();
+		}
+	}
+
+	public int[] get() {
+		return [score, bestScore];
 	}
 }

@@ -1,5 +1,7 @@
 module main;
 
+immutable string APPNAME = "native_bird";
+
 import raylib;
 import std.stdio : writeln;
 

@@ -1,12 +1,10 @@
 module menu.menu;
 
+import raylib : Rectangle, DrawTexture, Texture2D, CloseWindow, Colors;
+import screen : AbstractScreen;
 import core.stdc.stdlib : exit;
-import raylib;
-import screen;
-import view;
-import game.game;
-import menu.assets;
-import draw;
+import menu.assets : loadBackground, menuBackground;
+import view : View, Label, Button;
 
 void initMenu() {
     loadBackground();
@@ -16,11 +14,14 @@ final class MainMenu : AbstractScreen {
     private Texture2D* backgroundRef;
 
     this() {
+        import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
         super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
         backgroundRef = &menuBackground;
     }
 
     protected override View[] uiBuild() {
+        import game.game : Game;
+
         View title = new Label("Местная птица", 40.0f);
         title.setPos(100.0f, 100.0f);
         title.centerHorizontally();
@@ -28,18 +29,22 @@ final class MainMenu : AbstractScreen {
         auto play = new Button("Играть", 32.0f);
         play.below(title);
         play.action = delegate() {
+            Game game = cast(Game)getChildScreen();
+			if(game !is null) {
+				game.initializeObjects();
+			}
             setChildVisible(true);
             setVisible(false);
         };
 
-        auto exit = new Button("Выход", 32.0f);
-        exit.below(play);
-        exit.action = delegate() {
+        auto exitButton = new Button("Выход", 32.0f);
+        exitButton.below(play);
+        exitButton.action = delegate() {
             CloseWindow();
             .exit(0);
         };
         
-        return [title, play, exit];
+        return [title, play, exitButton];
     }
 
     public override void safeDraw() {
