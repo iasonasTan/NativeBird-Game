@@ -13,7 +13,7 @@
         "res"
     ],
     "lflags-linux": [
-        "./libraylib.a",
+        "./libs/linux/libraylib.a",
         "-lGL", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11"
     ],
     "sourceFiles-windows": [
