@@ -116,7 +116,7 @@ final class Game : AbstractScreen, Context {
 		if(player.y > SCREEN_HEIGHT) {
 			onGameOver();
 		}
-		if(IsKeyPressed(KeyboardKey.KEY_ESCAPE) && player.alive()) {
+		if(IsKeyPressed(KeyboardKey.KEY_ESCAPE)) {
 			showMenu();
 		}
 	}
@@ -132,8 +132,10 @@ final class Game : AbstractScreen, Context {
 	}
 
 	private void showMenu() {
-		setVisible(!isVisible());
-		setChildVisible(!getChildScreen().isVisible());
+		if(player.alive()) {
+			setVisible(!isVisible());
+			setChildVisible(!getChildScreen().isVisible());
+		}
 	}
 
 	public void increaseScore() {
