@@ -8,8 +8,8 @@ import game.game;
 import game.assets;
 import draw;
 
-immutable float GRAVITY = 100.0f;
-immutable float FLAP_STRENGTH = 100.0f;
+private immutable float GRAVITY = 100.0f;
+private immutable float FLAP_STRENGTH = 100.0f;
 
 abstract class Model {
     private Rectangle bounds;
@@ -135,14 +135,17 @@ final class Background : Model {
     }
 }
 
-class Pipe : Model {
+abstract class Pipe : Model {
     private immutable float SPEED = -100.0f;
 
-    this(float y, Texture2D* texture) {
+    this(float y, float offsetX) {
         Rectangle bounds = Rectangle(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT);
-        Rectangle hitbox = Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-        super(bounds, hitbox, [texture]);
+        super(bounds, getHitbox(bounds), [getTexture]);
+        dx(offsetX);
     }
+
+    protected abstract Rectangle getHitbox(Rectangle bounds);
+    protected abstract Texture2D* getTexture();
 
     public override void update(Context context) {
         dx(SPEED * context.getDeltaTime());
@@ -152,21 +155,51 @@ class Pipe : Model {
     }
 }
 
+final class TopPipe : Pipe {
+    this(float y, float offx) {
+        super(y, offx);
+    }
+
+    protected override Rectangle getHitbox(Rectangle bounds) {
+        float diffH = bounds.height /40.0f;
+        float diffW = bounds.width  /25.0f;
+        return Rectangle(bounds.x+diffW, bounds.y, bounds.width-diffW, bounds.height-diffH);
+    }
+
+    protected override Texture2D* getTexture() {
+        return &PIPE_T;
+    }
+}
+
+final class BotPipe : Pipe {
+    this(float y, float offx) {
+        super(y, offx);
+    }
+
+    protected override Rectangle getHitbox(Rectangle bounds) {
+        float diffH = bounds.height /40.0f;
+        float diffW = bounds.width  /25.0f;
+        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW, bounds.height);
+    }
+
+    protected override Texture2D* getTexture() {
+        return &PIPE_B;
+    }
+}
+
 final class Pipes {
     private bool crossed = false;
     public Pipe topPipe;
     public Pipe botPipe;
 
     this() {
-        this(0);
+        this(0.0f);
     }
 
     this(float offsetX) {
         float[] newY = getPipesY();
-        topPipe = new Pipe(newY[0], &PIPE_T);
-        botPipe = new Pipe(newY[1], &PIPE_B);
-        topPipe.dx(offsetX);
-        botPipe.dx(offsetX);
+        topPipe = new TopPipe(newY[0], offsetX);
+        botPipe = new BotPipe(newY[1], offsetX);
     }
 
     public void update(Context context) {
