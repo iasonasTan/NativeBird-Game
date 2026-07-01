@@ -7,6 +7,8 @@ import menu.assets : loadBackground, menuBackground;
 import view : View, Label, Button;
 
 void initMenu() {
+    import std.stdio : writeln;
+    writeln("Initializing menu...");
     loadBackground();
 }
 
@@ -14,6 +16,8 @@ final class MainMenu : AbstractScreen {
     private Texture2D* backgroundRef;
 
     this() {
+        import std.stdio : writeln;
+        writeln("Initializing main menu screen...");
         import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
         super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
         backgroundRef = &menuBackground;

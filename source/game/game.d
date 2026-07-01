@@ -3,19 +3,19 @@ module game.game;
 import raylib;
 import std.conv : to;
 
-import game.draw;
-import game.model : Model;
 import game.model;
-import game.assets;
-
-import screen;
-import draw;
-import view;
-import config : getConfFilePath;
+import screen : AbstractScreen, Screen;
+import draw : drawRectangle, SCREEN_WIDTH, SCREEN_HEIGHT;
+import view : Label, Button, View;
+import game.sound : MusicHandler;
 
 private string SCORE_CONFIG_PATH;
 
 void initGame() {
+	import std.stdio : writeln;
+	writeln("Initializing game...");
+	import config : getConfFilePath;
+	import game.assets : loadGameTextures;
     loadGameTextures();
 	SCORE_CONFIG_PATH = getConfFilePath("score");
 }
@@ -26,6 +26,8 @@ interface Context {
 	Player getPlayer();
 	void increaseScore();
 }
+
+import game.sound : MusicHandler;
 
 final class Game : AbstractScreen, Context {
 	// Logic
@@ -42,8 +44,11 @@ final class Game : AbstractScreen, Context {
 	private Label gameOverView;
 	private Label scoreView;
 
-	this(Screen parent) {
+	this(Screen parent, bool visible) {
+		import std.stdio : writeln;
+		writeln("Initializing game screen...");
 		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), parent);
+		setVisible(visible);
 		initializeObjects();
 	}
 
@@ -85,6 +90,7 @@ final class Game : AbstractScreen, Context {
 	}
 
 	public override void safeDraw() {
+		import game.draw : drawModel;
 		ClearBackground(Colors.RAYWHITE);
 		drawModel(background, this);
 		drawModel(player, this);
@@ -93,6 +99,7 @@ final class Game : AbstractScreen, Context {
 			drawRectangle(player.ghitbox, Colors.RED);
     	}
 		foreach(p; pipes) {
+			import game.model : Model;
 			p.draw(delegate(Model model) {
 				drawModel(model, this);
 				if(drawDebug) {
@@ -135,24 +142,32 @@ final class Game : AbstractScreen, Context {
 		if(player.alive()) {
 			setVisible(!isVisible());
 			setChildVisible(!getChildScreen().isVisible());
+			MusicHandler.getInstance.pause();
 		}
 	}
 
 	public void increaseScore() {
 		import std.format : format;
-
 		scoreHandler.increaseScore();
 		int[] scores = scoreHandler.get();
 		string scoresStr = format("Счет: %d, Лучший результат: %d", scores[0], scores[1]);
 		scoreView.setText(scoresStr);
+	}
+
+	public override void onShow() {
+		super.onShow();
+		MusicHandler.getInstance.play();
 	}
 }
 
 final class PauseMenu : AbstractScreen {
 	private Button resume;
 
-	this(Screen parent) {
+	this(Screen parent, bool visible) {
+		import std.stdio : writeln;
+		writeln("Initializing pause menu screen...");
 		super(Rectangle(SCREEN_WIDTH/3.5,SCREEN_HEIGHT/2.5,SCREEN_WIDTH/3,SCREEN_HEIGHT/3), parent);
+		setVisible(visible);
 	}
 
 	public void enableResume(bool v) {
@@ -173,6 +188,7 @@ final class PauseMenu : AbstractScreen {
 				game.initializeObjects();
 			}
 			getParent().setVisible(true);
+			MusicHandler.getInstance.stop();
 		};
 
 		auto menu = new Button("Показать главное меню.", 32.0f);
@@ -180,6 +196,7 @@ final class PauseMenu : AbstractScreen {
 		menu.action = delegate() {
 			setVisible(false);
 			getParent().getParent().setVisible(true);
+			MusicHandler.getInstance.stop();
 		};
 
 		resume = new Button("Возобновить игру.", 32.0f);
@@ -187,6 +204,7 @@ final class PauseMenu : AbstractScreen {
 		resume.action = delegate() {
 			setVisible(false);
 			getParent().setVisible(true);
+			MusicHandler.getInstance.play();
 		};
 
 		return [title, restart, menu, resume];
