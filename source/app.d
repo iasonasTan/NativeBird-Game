@@ -3,7 +3,9 @@ module main;
 immutable string APPNAME = "native_bird";
 
 import raylib : InitWindow, SetExitKey, SetTargetFPS, WindowShouldClose,
-    CloseWindow, EndDrawing, BeginDrawing, KeyboardKey;
+    CloseWindow, EndDrawing, BeginDrawing, KeyboardKey, SetWindowIcon, LoadImageFromMemory;
+
+import assets : loadAssets, windowIcon;
 
 import screen : Screen;
 import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -15,6 +17,8 @@ void main() {
     InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
     SetTargetFPS(60);
     SetExitKey(KeyboardKey.KEY_NULL);
+    loadAssets();
+    SetWindowIcon(windowIcon);
 
     initGame();
     initMenu();

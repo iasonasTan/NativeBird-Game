@@ -61,9 +61,10 @@ class Label : View {
     private Font font;
 
     this(string txt, float fsize) {
+        import assets : mainFont;
         fontSize = fsize;
         text = txt;
-        font = loadMainFont();
+        font = mainFont;
         float[] size = calculateSize();
         super(size[0], size[1]);
     }

@@ -15,8 +15,8 @@ void initGame() {
 	import std.stdio : writeln;
 	writeln("Initializing game...");
 	import config : getConfFilePath;
-	import game.assets : loadGameTextures;
-    loadGameTextures();
+	import game.assets : loadGameAssets;
+    loadGameAssets();
 	SCORE_CONFIG_PATH = getConfFilePath("score");
 }
 

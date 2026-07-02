@@ -1,7 +1,7 @@
 module game.sound;
 
 import raylib : Music;
-import game.assets : MAIN_MUSIC;
+import game.assets : MUSIC;
 import std.stdio : writeln;
 
 final class MusicHandler {
@@ -17,9 +17,10 @@ final class MusicHandler {
     private bool paused = false;
 
     private this() {
-        import raylib : LoadMusicStreamFromMemory, InitAudioDevice;
+        import raylib : InitAudioDevice;
+        import game.assets : MUSIC;
         InitAudioDevice();
-        music = LoadMusicStreamFromMemory(".wav", MAIN_MUSIC.ptr, MAIN_MUSIC.length);
+        music = MUSIC;
         music.looping = true;
     }
 
