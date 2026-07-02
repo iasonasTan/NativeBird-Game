@@ -1,8 +1,6 @@
 module game.model;
 
-import raylib;
-import std.random;
-import std.conv;
+import raylib : Texture2D, Rectangle;
 import game.draw;
 import game.game;
 import game.assets;
@@ -84,11 +82,15 @@ final class Player : Model {
     }
 
     public override void update(Context context) {
+        import raylib : IsMouseButtonDown, IsKeyDown, MouseButton, KeyboardKey;
         float dt = context.getDeltaTime();
         velocityY += GRAVITY * dt;
         dy(velocityY * dt);
-        if(!dead && IsKeyDown(KeyboardKey.KEY_SPACE)) {
-            context.getPlayer().flap(context);
+        const bool mouseButtonPressed = IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT) ||
+            IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT);
+        const bool keyPressed = IsKeyDown(KeyboardKey.KEY_SPACE);
+        if(!dead && (keyPressed || mouseButtonPressed)) {
+            flap(context);
         }
         if(y > SCREEN_HEIGHT) {
             dead = true;
@@ -235,6 +237,7 @@ final class Pipes {
     }
 
     public float[] getPipesY() {
+        import std.random : uniform;
         float topY = uniform(-PIPE_HEIGHT/2, 0.0f);
         float botY = topY+PIPE_HEIGHT+MODEL_SIZE*2;
         return [topY, botY];

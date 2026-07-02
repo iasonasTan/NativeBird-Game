@@ -136,6 +136,7 @@ final class Game : AbstractScreen, Context {
 		}
 		setVisible(false);
 		setChildVisible(true);
+		MusicHandler.getInstance.pause();
 	}
 
 	private void showMenu() {
