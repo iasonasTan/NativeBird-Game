@@ -25,7 +25,7 @@ public string getConfFilePath(string fileName) @safe {
  * Returns the absolute path to the current user's home directory.
  * Returns: current directory path if the directory cannot be determined.
  */
-string getUserHomeDirectory() @safe {
+public string getUserHomeDirectory() @safe {
     import std.process : environment;
     import std.file : getcwd;
 

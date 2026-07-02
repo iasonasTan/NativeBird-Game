@@ -17,9 +17,8 @@ final class MusicHandler {
     private bool paused = false;
 
     private this() {
-        import raylib : InitAudioDevice;
         import game.assets : MUSIC;
-        InitAudioDevice();
+        
         music = MUSIC;
         music.looping = true;
     }
@@ -43,7 +42,7 @@ final class MusicHandler {
         paused = true;
     }
 
-    public void stop() {
+    public void reset() {
         import raylib : StopMusicStream;
         writeln("Stopping music...");
         paused = false;

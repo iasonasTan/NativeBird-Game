@@ -3,16 +3,22 @@ module assets;
 import raylib : LoadImageFromMemory, LoadFontFromMemory, Texture2D, Image, Font, ImageResize,
     UnloadImage, LoadTextureFromImage;
 import std.conv : to;
+import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
 
-private immutable ubyte[] MAIN_FONT_BYTES = cast(immutable ubyte[]) import("jura_bold.ttf");
-private immutable ubyte[] WINDOW_ICON     = cast(immutable ubyte[]) import("icon.png");
+private immutable ubyte[] MAIN_FONT_BYTES  = cast(immutable ubyte[]) import("jura_bold.ttf");
+private immutable ubyte[] WINDOW_ICON      = cast(immutable ubyte[]) import("icon.png");
+private immutable ubyte[] BACKGROUND_BYTES = cast(immutable ubyte[]) import("menu_background.png");
 
+Texture2D menuBackground;
 Font mainFont;
 Image windowIcon;
 
 void loadAssets() {
     loadMainFont();
     windowIcon = LoadImageFromMemory(".png", WINDOW_ICON.ptr, WINDOW_ICON.length);
+    menuBackground = imageToTexture(
+        LoadImageFromMemory(".png", BACKGROUND_BYTES.ptr, cast(int)BACKGROUND_BYTES.length),
+        SCREEN_WIDTH,SCREEN_HEIGHT);
 }
 
 private void loadMainFont() {

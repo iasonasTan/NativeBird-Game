@@ -7,7 +7,6 @@ import game.model;
 import screen : AbstractScreen, Screen;
 import draw : drawRectangle, SCREEN_WIDTH, SCREEN_HEIGHT;
 import view : Label, Button, View;
-import game.sound : MusicHandler;
 
 private string SCORE_CONFIG_PATH;
 
@@ -44,11 +43,10 @@ final class Game : AbstractScreen, Context {
 	private Label gameOverView;
 	private Label scoreView;
 
-	this(Screen parent, bool visible) {
+	this(bool visible) {
 		import std.stdio : writeln;
 		writeln("Initializing game screen...");
-		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), parent);
-		setVisible(visible);
+		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), visible);
 		initializeObjects();
 	}
 
@@ -82,11 +80,6 @@ final class Game : AbstractScreen, Context {
 		scoreHandler = new ScoreHandler();
 		int bscore = scoreHandler.get()[1];
 		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
-
-		PauseMenu pMenu = cast(PauseMenu)getChildScreen();
-		if(pMenu !is null) {
-			pMenu.enableResume(true);
-		}
 	}
 
 	public override void safeDraw() {
@@ -129,22 +122,16 @@ final class Game : AbstractScreen, Context {
 	}
 
 	public void onGameOver() {
+		import main : screens;
+		showMenu();
 		scoreHandler.close();
-		PauseMenu pMenu = cast(PauseMenu)getChildScreen();
-		if(pMenu !is null) {
-			pMenu.enableResume(false);
-		}
-		setVisible(false);
-		setChildVisible(true);
-		MusicHandler.getInstance.pause();
 	}
 
 	private void showMenu() {
-		if(player.alive()) {
-			setVisible(!isVisible());
-			setChildVisible(!getChildScreen().isVisible());
-			MusicHandler.getInstance.pause();
-		}
+		import main : screens;
+		setVisible(false);
+		screens.getPauseMenu.enableResume(player.alive());
+		screens.getPauseMenu.setVisible(true);
 	}
 
 	public void increaseScore() {
@@ -159,16 +146,20 @@ final class Game : AbstractScreen, Context {
 		super.onShow();
 		MusicHandler.getInstance.play();
 	}
+
+	public override void onHide() {
+		super.onHide();
+		MusicHandler.getInstance.pause();
+	}
 }
 
 final class PauseMenu : AbstractScreen {
 	private Button resume;
 
-	this(Screen parent, bool visible) {
+	this(bool visible) {
 		import std.stdio : writeln;
 		writeln("Initializing pause menu screen...");
-		super(Rectangle(SCREEN_WIDTH/3.5,SCREEN_HEIGHT/2.5,SCREEN_WIDTH/3,SCREEN_HEIGHT/3), parent);
-		setVisible(visible);
+		super(Rectangle(SCREEN_WIDTH/3.5,SCREEN_HEIGHT/2.5,SCREEN_WIDTH/3,SCREEN_HEIGHT/3), visible);
 	}
 
 	public void enableResume(bool v) {
@@ -176,6 +167,8 @@ final class PauseMenu : AbstractScreen {
 	}
 
 	public override View[] uiBuild() {
+		import main : screens;
+
 		View title = new Label("Игра приостановлена.", 40.0f);
 		title.setPos(0.0f, getBounds.y + title.margin);
 		title.centerHorizontally();
@@ -183,29 +176,26 @@ final class PauseMenu : AbstractScreen {
 		auto restart = new Button("Перезапустить игру.", 32.0f);
 		restart.below(title);
 		restart.action = delegate() {
+			MusicHandler.getInstance.reset();
+			screens.getGame.initializeObjects();
+			screens.getGame.setVisible(true);
 			setVisible(false);
-			Game game = cast(Game)getParent();
-			if(game !is null) {
-				game.initializeObjects();
-			}
-			getParent().setVisible(true);
-			MusicHandler.getInstance.stop();
 		};
 
 		auto menu = new Button("Показать главное меню.", 32.0f);
 		menu.below(restart);
 		menu.action = delegate() {
+			screens.getMainMenu.setVisible(true);
 			setVisible(false);
-			getParent().getParent().setVisible(true);
-			MusicHandler.getInstance.stop();
+			screens.getGame.initializeObjects();
+			MusicHandler.getInstance.reset();
 		};
 
 		resume = new Button("Возобновить игру.", 32.0f);
 		resume.below(menu);
 		resume.action = delegate() {
+			screens.getGame.setVisible(true);
 			setVisible(false);
-			getParent().setVisible(true);
-			MusicHandler.getInstance.play();
 		};
 
 		return [title, restart, menu, resume];
