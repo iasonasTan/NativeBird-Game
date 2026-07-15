@@ -6,6 +6,7 @@ copyright "Copyright © 2026, iasonas"
 license "GPL-3.0-only"
 
 stringImportPaths "res"
+targetType "executable"
 
 # Linux Settings
 configuration "linux" {
