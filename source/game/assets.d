@@ -13,12 +13,9 @@ import assets : imageToTexture;
 import game.draw;
 
 // Textures
-Texture2D BIRD_1;
-Texture2D BIRD_2;
-Texture2D BIRD_D;
+Texture2D BIRD_1, BIRD_2, BIRD_D;
+Texture2D PIPE_T, PIPE_B;
 Texture2D BACKGR;
-Texture2D PIPE_T;
-Texture2D PIPE_B;
 
 // Sound
 Music MUSIC;
