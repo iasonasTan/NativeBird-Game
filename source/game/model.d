@@ -6,14 +6,14 @@ import game.game;
 import game.assets;
 import draw;
 
-private immutable float GRAVITY = 100.0f;
-private immutable float FLAP_STRENGTH = 100.0f;
+private immutable float GRAVITY = 150.0f;
+private immutable float FLAP_STRENGTH = 150.0f;
 
 abstract class Model {
     private Rectangle bounds;
     private Rectangle hitbox;
     private Texture2D*[] texturePtrs;
-    
+
     private int textureIdx = 0;
     private const float textureDelta = 0.5f;
     private float lastTextureSwitch  = 0.0f;
@@ -56,7 +56,7 @@ abstract class Model {
         bounds.x += d;
         hitbox.x += d;
     }
-    
+
     public final void dy(float d) {
         bounds.y += d;
         hitbox.y += d;
@@ -72,7 +72,7 @@ abstract class Model {
 final class Player : Model {
     private Texture2D* textureDead;
     private bool dead = false;
-    private float velocityY = 0.1f;
+    private float velocityY = 0.2f;
 
     this() {
         Rectangle bounds = Rectangle(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE);
@@ -119,7 +119,7 @@ final class Player : Model {
 }
 
 final class Background : Model {
-    private immutable float SPEED = -75.0f;
+    private immutable float SPEED = -95.0f;
 
     this() {
         Rectangle bounds = Rectangle(0.0f, 0.0f, SCREEN_WIDTH*3, SCREEN_HEIGHT*1);
@@ -138,10 +138,12 @@ final class Background : Model {
 }
 
 abstract class Pipe : Model {
-    private immutable float SPEED = -100.0f;
+    private immutable float SPEED = -120.0f;
 
     this(float y, float offsetX) {
         Rectangle bounds = Rectangle(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT);
+        // This call may produce segmentation fault but here,
+        // all properties are private so subclass can't access them.
         super(bounds, getHitbox(bounds), [getTexture]);
         dx(offsetX);
     }

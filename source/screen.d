@@ -6,10 +6,10 @@ import view;
 interface Screen {
     void update();
     void draw();
-    
+
     void setVisible(bool visible);
     bool isVisible();
-    
+
     Rectangle getBounds();
 }
 
@@ -20,6 +20,9 @@ abstract class AbstractScreen : Screen {
 
     this(Rectangle bounds) {
         this.bounds = bounds;
+
+        // This call may produce segmentation fault but here,
+        // all properties are private so subclass can't access them.
         views ~= uiBuild();
     }
 

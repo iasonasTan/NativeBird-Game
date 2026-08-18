@@ -14,7 +14,7 @@ import menu : MainMenu, SettingsMenu;
 
 private DefaultScreenSupplier screenSupplier;
 
-/** 
+/**
  * This method supplies the screen supplier to every utility in the program.
  * WARNING: It is forbidden to use this method in a screen constructor.
  */
@@ -31,7 +31,7 @@ void main() {
     import raylib : InitAudioDevice;
     InitAudioDevice();
     initGame();
-    auto ignored = MusicHandler.getInstance();
+    auto _ = MusicHandler.getInstance();
 
     screenSupplier = new DefaultScreenSupplier(
         new MainMenu(),
@@ -67,7 +67,7 @@ private final class DefaultScreenSupplier : ScreenSupplier {
     private Game game;
     private PauseMenu pauseMenu;
 
-    this(MainMenu mainMenu, SettingsMenu settingsMenu, 
+    this(MainMenu mainMenu, SettingsMenu settingsMenu,
         Game game, PauseMenu pauseMenu) {
         this.mainMenu    = mainMenu;
         this.settingsMenu = settingsMenu;
