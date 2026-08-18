@@ -21,6 +21,14 @@ abstract class View {
         bounds.y = y;
     }
 
+    public void alignRight(float parentWidth) {
+        bounds.x = parentWidth - bounds.width;
+    }
+
+    public void alignLeft() {
+        bounds.x = 0.0f;
+    }
+
     public void above(View other) {
         bounds.y =  other.bounds.y;
         bounds.y -= other.bounds.h;

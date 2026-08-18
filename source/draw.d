@@ -2,8 +2,8 @@ module draw;
 
 import raylib : Rectangle, Font, Vector2, Color, DrawRectangle, DrawTextEx, MeasureTextEx, DrawLineEx;
 
-public immutable float SCREEN_WIDTH  = 1000.0f;
-public immutable float SCREEN_HEIGHT = 800.0f;
+public immutable float SCREEN_WIDTH  = 1920.0f;
+public immutable float SCREEN_HEIGHT = 1080.0f;
 
 void drawRectangle(Rectangle rectangle, Color color) {
     DrawRectangle(cast(int)rectangle.x, cast(int)rectangle.y,

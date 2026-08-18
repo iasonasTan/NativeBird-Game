@@ -33,7 +33,7 @@ final class Game : AbstractScreen, Context {
 	private float gameTime = 0.0f;
 	private bool drawDebug = false;
 	private ScoreHandler scoreHandler;
-	
+
 	// Models
 	private Player player;
 	private Background background;
@@ -80,6 +80,7 @@ final class Game : AbstractScreen, Context {
 		scoreHandler = new ScoreHandler();
 		int bscore = scoreHandler.get()[1];
 		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
+		scoreView.alignRight(getBounds().width);
 	}
 
 	public override void safeDraw() {
