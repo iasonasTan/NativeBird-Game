@@ -21,12 +21,12 @@ abstract class View {
         bounds.y = y;
     }
 
-    public void alignRight(float parentWidth) {
-        bounds.x = parentWidth - bounds.width;
+    public void alignRight(Rectangle parentBounds) {
+        bounds.x = parentBounds.x + parentBounds.width - bounds.width;
     }
 
-    public void alignLeft() {
-        bounds.x = 0.0f;
+    public void alignLeft(Rectangle parentBounds) {
+        bounds.x = parentBounds.x;
     }
 
     public void above(View other) {
