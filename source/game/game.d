@@ -80,7 +80,7 @@ final class Game : AbstractScreen, Context {
 		scoreHandler = new ScoreHandler();
 		int bscore = scoreHandler.get()[1];
 		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
-		scoreView.alignRight(getBounds().width);
+		scoreView.alignRight(getBounds);
 	}
 
 	public override void safeDraw() {
@@ -160,7 +160,10 @@ final class PauseMenu : AbstractScreen {
 	this(bool visible) {
 		import std.stdio : writeln;
 		writeln("Initializing pause menu screen...");
-		super(Rectangle(SCREEN_WIDTH/3.5,SCREEN_HEIGHT/2.5,SCREEN_WIDTH/3,SCREEN_HEIGHT/3), visible);
+		float width = SCREEN_WIDTH/3.0f;
+		float height= SCREEN_HEIGHT/4.0f;
+		Rectangle bounds = Rectangle(SCREEN_WIDTH/2-width/2,SCREEN_HEIGHT/2-height/2,width,height);
+		super(bounds, visible);
 	}
 
 	public void enableResume(bool v) {
@@ -172,7 +175,10 @@ final class PauseMenu : AbstractScreen {
 
 		View title = new Label("Игра приостановлена.", 40.0f);
 		title.setPos(0.0f, getBounds.y + title.margin);
-		title.centerHorizontally();
+
+		Rectangle fakeBounds = getBounds;
+		fakeBounds.x -= 15.0f;
+		title.alignLeft(fakeBounds);
 
 		auto restart = new Button("Перезапустить игру.", 32.0f);
 		restart.below(title);
@@ -198,6 +204,8 @@ final class PauseMenu : AbstractScreen {
 			screens.getGame.setVisible(true);
 			setVisible(false);
 		};
+
+		getBoundsRef.width = restart.getWidth;
 
 		return [title, restart, menu, resume];
 	}
