@@ -21,7 +21,7 @@ final class MainMenu : AbstractScreen {
         View title = new Label("Местная птица", 40.0f);
         title.setPos(100.0f, 100.0f);
         title.centerHorizontally();
-        
+
         auto play = new Button("Играть", 32.0f);
         play.below(title);
         play.action = delegate() {
@@ -42,7 +42,7 @@ final class MainMenu : AbstractScreen {
             CloseWindow();
             .exit(0);
         };
-        
+
         return [title, play, exitButton, settingsButton];
     }
 

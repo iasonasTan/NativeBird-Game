@@ -160,10 +160,8 @@ final class PauseMenu : AbstractScreen {
 	this(bool visible) {
 		import std.stdio : writeln;
 		writeln("Initializing pause menu screen...");
-		float width = SCREEN_WIDTH/3.0f;
-		float height= SCREEN_HEIGHT/4.0f;
-		Rectangle bounds = Rectangle(SCREEN_WIDTH/2-width/2,SCREEN_HEIGHT/2-height/2,width,height);
-		super(bounds, visible);
+		float width = 500.0f, height = 300.0f;
+		super(Rectangle(SCREEN_WIDTH/2-width/2,SCREEN_HEIGHT/2-height/2,width,height), visible);
 	}
 
 	public void enableResume(bool v) {
