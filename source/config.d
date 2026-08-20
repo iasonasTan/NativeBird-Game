@@ -2,7 +2,7 @@ module config;
 
 import std.path : buildPath;
 
-/** 
+/**
  * Returns absolute path to configuration file.
  * Returns: configuration file path as string
  */

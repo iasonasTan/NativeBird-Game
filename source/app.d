@@ -29,24 +29,18 @@ void main() {
 
     // Initialize Window with default dimensions
     InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
+    SetTargetFPS(60);
+    SetExitKey(KeyboardKey.KEY_NULL);
 
     initDraw;
     initGameDraw;
-
-    SetTargetFPS(60);
-    SetExitKey(KeyboardKey.KEY_NULL);
     loadAssets();
     SetWindowIcon(windowIcon);
     InitAudioDevice();
     initGame();
     auto _ = MusicHandler.getInstance();
 
-    screenSupplier = new ScreenHolder(
-        new MainMenu(),
-        new SettingsMenu(false),
-        new Game(false),
-        new PauseMenu(false)
-    );
+    initScreens;
 
     while (!WindowShouldClose()) {
         // Update
@@ -60,6 +54,31 @@ void main() {
     }
     CloseWindow();
     MusicHandler.getInstance().unload();
+}
+
+public void initializeEngine() {
+    import draw : initDraw;
+    import game.draw : initGameDraw;
+    import main : initScreens;
+    import game.game : initGame;
+    import assets : loadAssets;
+
+    initDraw;
+    initGameDraw;
+    initScreens;
+    initGame;
+    loadAssets;
+
+    screenSupplier.getSettingsMenu.setVisible(true);
+}
+
+public void initScreens() {
+    screenSupplier = new ScreenHolder(
+        new MainMenu(),
+        new SettingsMenu(false),
+        new Game(false),
+        new PauseMenu(false)
+    );
 }
 
 public interface ScreenSupplier {

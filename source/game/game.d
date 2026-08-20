@@ -63,7 +63,7 @@ final class Game : AbstractScreen, Context {
 
 		Button menuButton = new Button("Показать меню.", 25.0f);
 		menuButton.setPos(0.0f, 0.0f);
-		menuButton.action = () => showMenu();
+		menuButton.action = (Button _) => showMenu();
 
 		scoreView = new Label("", 25.0f);
 		scoreView.centerHorizontally();
@@ -180,7 +180,7 @@ final class PauseMenu : AbstractScreen {
 
 		auto restart = new Button("Перезапустить игру.", 32.0f);
 		restart.below(title);
-		restart.action = delegate() {
+		restart.action = delegate(Button _) {
 			MusicHandler.getInstance.reset();
 			screens.getGame.initializeObjects();
 			screens.getGame.setVisible(true);
@@ -189,7 +189,7 @@ final class PauseMenu : AbstractScreen {
 
 		auto menu = new Button("Показать главное меню.", 32.0f);
 		menu.below(restart);
-		menu.action = delegate() {
+		menu.action = delegate(Button _) {
 			screens.getMainMenu.setVisible(true);
 			setVisible(false);
 			screens.getGame.initializeObjects();
@@ -198,7 +198,7 @@ final class PauseMenu : AbstractScreen {
 
 		resume = new Button("Возобновить игру.", 32.0f);
 		resume.below(menu);
-		resume.action = delegate() {
+		resume.action = delegate(Button _) {
 			screens.getGame.setVisible(true);
 			setVisible(false);
 		};

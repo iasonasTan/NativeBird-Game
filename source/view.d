@@ -1,10 +1,9 @@
 module view;
 
-import raylib;
+import raylib : Rectangle, Color, Font, Colors, Vector2;
 import std.string : toStringz;
 import std.conv : to;
-import draw;
-import assets;
+import draw : drawTextUnderline;
 
 abstract class View {
     protected Rectangle bounds = Rectangle(0, 0, 0, 0);
@@ -42,7 +41,20 @@ abstract class View {
         bounds.x = other.bounds.x;
     }
 
+    public void right(View other) {
+        bounds.y = other.bounds.y;
+        bounds.x = other.bounds.x + other.bounds.w;
+        bounds.x += other.m + this.m;
+    }
+
+    public void left(View other) {
+        bounds.y = other.bounds.y;
+        bounds.x = other.bounds.x - other.bounds.w;
+        bounds.x -= other.m + this.m;
+    }
+
     public void centerHorizontally() {
+        import draw : SCREEN_WIDTH;
         bounds.x = SCREEN_WIDTH /2 -bounds.w /2;
     }
 
@@ -102,12 +114,18 @@ class Label : View {
         return txt_chars;
     }
 
+    public string getText() {
+        return text;
+    }
+
     private float[] calculateSize() {
+        import raylib : MeasureTextEx;
         Vector2 textSize = MeasureTextEx(font, c_txt(), fontSize, p);
         return [textSize.x+p*2, textSize.y+p*2];
     }
 
     public override void draw() {
+        import raylib : DrawRectangle, DrawTextEx;
         const Vector2 position = Vector2(bounds.x+padding, bounds.y+padding);
         DrawRectangle(getX, getY, getWidth, getHeight, background);
         DrawTextEx(font, c_txt, position, fontSize, 0, foreground);
@@ -115,7 +133,7 @@ class Label : View {
 }
 
 class Button : Label {
-    public void delegate() action;
+    public void delegate(Button source) action;
 
     this(string txt, float fontSize) {
         super(txt, fontSize);
@@ -128,9 +146,12 @@ class Button : Label {
     }
 
     public override void update() {
-        if(IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) &&
-                CheckCollisionPointRec(GetMousePosition(), bounds)) {
-            action();
+        import raylib : IsMouseButtonReleased, MouseButton, CheckCollisionPointRec, GetMousePosition, PollInputEvents;
+        if(IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT) &&
+            CheckCollisionPointRec(GetMousePosition(), bounds)) {
+
+            PollInputEvents;
+            action(this);
         }
     }
 }
