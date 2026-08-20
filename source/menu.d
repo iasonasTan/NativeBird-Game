@@ -98,7 +98,7 @@ public final class SettingsMenu : AbstractScreen {
         resolution3.right(resolution2);
         resolution3.action = action;
 
-        Button resolution4 = new Button("monitor", 30.0f);
+        Button resolution4 = new Button("монитор", 30.0f);
         resolution4.right(resolution3);
         resolution4.action = action;
 
