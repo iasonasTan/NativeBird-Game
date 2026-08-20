@@ -41,6 +41,14 @@ abstract class AbstractScreen : Screen {
 
     public override Rectangle getBounds() { return bounds; }
 
+    protected Rectangle* getBoundsRef() { return &bounds; }
+
+    protected void revalidate() {
+        foreach(view; views) {
+            view.revalidate;
+        }
+    }
+
     public final override void setVisible(bool visible) {
         this.visible = visible;
         if(!visible) {

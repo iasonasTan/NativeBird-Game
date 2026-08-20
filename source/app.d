@@ -12,7 +12,7 @@ import game.game : Game, PauseMenu, initGame;
 import game.sound : MusicHandler;
 import menu : MainMenu, SettingsMenu;
 
-private DefaultScreenSupplier screenSupplier;
+private ScreenHolder screenSupplier;
 
 /**
  * This method supplies the screen supplier to every utility in the program.
@@ -23,22 +23,24 @@ public ScreenSupplier screens() {
 }
 
 void main() {
+    import draw : initDraw;
+    import game.draw : initGameDraw;
+    import raylib : InitAudioDevice;
+
+    // Initialize Window with default dimensions
     InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
     SetTargetFPS(60);
     SetExitKey(KeyboardKey.KEY_NULL);
+
+    initDraw;
+    initGameDraw;
     loadAssets();
     SetWindowIcon(windowIcon);
-    import raylib : InitAudioDevice;
     InitAudioDevice();
     initGame();
     auto _ = MusicHandler.getInstance();
 
-    screenSupplier = new DefaultScreenSupplier(
-        new MainMenu(),
-        new SettingsMenu(false),
-        new Game(false),
-        new PauseMenu(false)
-    );
+    initScreens;
 
     while (!WindowShouldClose()) {
         // Update
@@ -54,6 +56,31 @@ void main() {
     MusicHandler.getInstance().unload();
 }
 
+public void initializeEngine() {
+    import draw : initDraw;
+    import game.draw : initGameDraw;
+    import main : initScreens;
+    import game.game : initGame;
+    import assets : loadAssets;
+
+    initDraw;
+    initGameDraw;
+    initScreens;
+    initGame;
+    loadAssets;
+
+    screenSupplier.getSettingsMenu.setVisible(true);
+}
+
+public void initScreens() {
+    screenSupplier = new ScreenHolder(
+        new MainMenu(),
+        new SettingsMenu(false),
+        new Game(false),
+        new PauseMenu(false)
+    );
+}
+
 public interface ScreenSupplier {
     MainMenu getMainMenu();
     SettingsMenu getSettingsMenu();
@@ -61,7 +88,7 @@ public interface ScreenSupplier {
     PauseMenu getPauseMenu();
 }
 
-private final class DefaultScreenSupplier : ScreenSupplier {
+private final class ScreenHolder : ScreenSupplier {
     private MainMenu mainMenu;
     private SettingsMenu settingsMenu;
     private Game game;

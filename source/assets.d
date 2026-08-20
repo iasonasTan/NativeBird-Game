@@ -26,7 +26,7 @@ private void loadMainFont() {
     for (int i = 32; i <= 126; i++)        { codepoints ~= i; }
     for (int i = 0x0400; i <= 0x04FF; i++) { codepoints ~= i; }
 
-    mainFont = LoadFontFromMemory(".ttf", MAIN_FONT_BYTES.ptr, cast(int)MAIN_FONT_BYTES.length, 
+    mainFont = LoadFontFromMemory(".ttf", MAIN_FONT_BYTES.ptr, cast(int)MAIN_FONT_BYTES.length,
         32, codepoints.ptr, cast(int)codepoints.length);
 }
 

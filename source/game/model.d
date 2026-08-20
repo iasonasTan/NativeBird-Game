@@ -240,7 +240,14 @@ final class Pipes {
 
     public float[] getPipesY() {
         import std.random : uniform;
-        float topY = uniform(-PIPE_HEIGHT/2, 0.0f);
+        float topY = 0;
+
+        float min = -PIPE_HEIGHT/2.0f;
+        float max = 0.0f;
+        if(min < max) {
+            topY = uniform(-PIPE_HEIGHT/2, 0.0f);
+        }
+
         float botY = topY+PIPE_HEIGHT+MODEL_SIZE*2;
         return [topY, botY];
     }
