@@ -77,9 +77,15 @@ public final class SettingsMenu : AbstractScreen {
         auto action = delegate(Button source) {
             import std.stdio : File;
             import config : getConfFilePath;
+
+            string originalText = source.getText;
+            if(originalText == "монитор") {
+                originalText = "monitor";
+            }
+
             string filePath = getConfFilePath("resolution");
             File file = File(filePath, "w");
-            file.writeln(source.getText);
+            file.writeln(originalText);
             file.close();
 
             import main : initializeEngine;
