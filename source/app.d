@@ -49,7 +49,7 @@ void main() {
 
         // Draw
         BeginDrawing();
-		 screenSupplier.draw();
+		screenSupplier.draw();
         EndDrawing();
     }
     CloseWindow();
@@ -68,6 +68,7 @@ public void initializeEngine() {
     initScreens;
     initGame;
     loadAssets;
+    MusicHandler.getInstance.loadSettings;
 
     screenSupplier.getSettingsMenu.setVisible(true);
 }

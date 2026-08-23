@@ -15,16 +15,47 @@ final class MusicHandler {
 
     private Music music;
     private bool paused = false;
+    private bool enabled = true;
 
     private this() {
         import game.assets : MUSIC;
 
         music = MUSIC;
         music.looping = true;
+
+        loadSettings();
+    }
+
+    public void loadSettings() {
+        import config : getConfFilePath;
+        import std.stdio : File, writeln;
+        import std.file : exists;
+        import std.string : strip;
+        import std.conv : to;
+
+        writeln("Loading music settings...");
+
+        string musicFilePath = getConfFilePath("music");
+        if(!exists(musicFilePath)) {
+            File file = File(musicFilePath, "w");
+            file.writeln("true");
+            file.close();
+            enabled = true;
+        } else {
+            File file = File(musicFilePath, "r");
+            string line = file.readln();
+            file.close();
+            writeln("Music enabled in configuration: " ~ line);
+            enabled = line !is null && line.strip == "true" ? true : false;
+            writeln("Music enabled in memory: " ~ enabled.to!string);
+        }
     }
 
     public void play() {
         import raylib : PlayMusicStream, ResumeMusicStream;
+
+        if(!enabled) return;
+
         if(paused) {
             writeln("Resuming music...");
             paused = false;

@@ -55,6 +55,9 @@ final class MainMenu : AbstractScreen {
 }
 
 public final class SettingsMenu : AbstractScreen {
+    private immutable string MUSIC_ENABLE  = "Включить музыку";
+    private immutable string MUSIC_DISABLE = "Отключить музыку";
+
     this(bool visible) {
         import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
         import raylib : Rectangle;
@@ -108,17 +111,53 @@ public final class SettingsMenu : AbstractScreen {
         resolution4.right(resolution3);
         resolution4.action = action;
 
+        import config : getConfFilePath;
+        import std.stdio : File;
+        import std.file : exists;
+        import std.string : strip;
+
+        Button enableMusicCheckbutton = new Button("NULL", 32.0f);
+        enableMusicCheckbutton.below(resolution1);
+        enableMusicCheckbutton.action = delegate(Button source) {
+            File file = File(getConfFilePath("music"), "w");
+
+            // Swap text and store value
+            if(source.getText == MUSIC_ENABLE) {
+                source.setText(MUSIC_DISABLE);
+                file.writeln("true");
+            } else {
+                source.setText(MUSIC_ENABLE);
+                file.writeln("false");
+            }
+            file.close();
+
+            import game.sound : MusicHandler;
+            MusicHandler.getInstance.loadSettings;
+        };
+
+        // Load saved setting to GUI
+        string musicFilePath = getConfFilePath("music");
+        if(!exists(musicFilePath)) {
+            File file = File(musicFilePath, "w");
+            file.writeln("true");
+            file.close();
+            enableMusicCheckbutton.setText(MUSIC_DISABLE);
+        } else {
+            File file = File(musicFilePath, "r");
+            string line = file.readln();
+            file.close();
+            enableMusicCheckbutton.setText(line !is null && line.strip == "true" ? MUSIC_DISABLE : MUSIC_ENABLE);
+        }
+
         Button menuButton = new Button("Показать главное меню.", 32.0f);
-        menuButton.below(resolution1);
+        menuButton.below(enableMusicCheckbutton);
         menuButton.action = delegate(Button _) {
-            // import core.thread : Thread;
-            // import core.time : msecs;
-            // Thread.sleep(10.msecs);
             setVisible(false);
             screens.getMainMenu.setVisible(true);
         };
 
-        return [title, resolutionTitle, resolution1, resolution2, resolution3, resolution4, menuButton];
+        return [title, resolutionTitle, resolution1, resolution2, resolution3, resolution4,
+            enableMusicCheckbutton, menuButton];
     }
 
     public override void safeDraw() {
