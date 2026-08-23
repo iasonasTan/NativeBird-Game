@@ -76,7 +76,9 @@ final class Player : Model {
 
     this() {
         Rectangle bounds = Rectangle(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE);
-        Rectangle hitbox = Rectangle(bounds.x+15, bounds.y+15, bounds.width-30, bounds.height-30);
+        const float hitboxGap = 30.0f;
+        Rectangle hitbox = Rectangle(bounds.x+hitboxGap, bounds.y+hitboxGap,
+            bounds.width-hitboxGap*2, bounds.height-hitboxGap*2);
         super(bounds, hitbox, [&BIRD_1, &BIRD_2]);
         textureDead = &BIRD_D;
     }
@@ -248,7 +250,7 @@ final class Pipes {
             topY = uniform(-PIPE_HEIGHT/2, 0.0f);
         }
 
-        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*2;
+        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*1.3;
         return [topY, botY];
     }
 }

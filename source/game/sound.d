@@ -18,7 +18,7 @@ final class MusicHandler {
 
     private this() {
         import game.assets : MUSIC;
-        
+
         music = MUSIC;
         music.looping = true;
     }
