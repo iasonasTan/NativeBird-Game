@@ -31,7 +31,7 @@ import game.sound : MusicHandler;
 final class Game : AbstractScreen, Context {
 	// Logic
 	private float gameTime = 0.0f;
-	private bool drawDebug = false;
+	private bool drawDebug = true;
 	private ScoreHandler scoreHandler;
 
 	// Models
@@ -85,20 +85,24 @@ final class Game : AbstractScreen, Context {
 
 	public override void safeDraw() {
 		import game.draw : drawModel;
+
+		const Color DEBUG_GREEN = Color(0, 228, 48, 255/3);
+		const Color DEBUG_RED   = Color(230, 41, 55, 255/3);
+
 		ClearBackground(Colors.RAYWHITE);
 		drawModel(background, this);
 		drawModel(player, this);
 		if(drawDebug) {
-			drawRectangle(player.gbounds, Colors.GREEN);
-			drawRectangle(player.ghitbox, Colors.RED);
+			drawRectangle(player.gbounds, DEBUG_GREEN);
+			drawRectangle(player.ghitbox, DEBUG_RED);
     	}
 		foreach(p; pipes) {
 			import game.model : Model;
 			p.draw(delegate(Model model) {
 				drawModel(model, this);
 				if(drawDebug) {
-					drawRectangle(model.gbounds, Colors.GREEN);
-					drawRectangle(model.ghitbox, Colors.RED);
+					drawRectangle(model.gbounds, DEBUG_GREEN);
+					drawRectangle(model.ghitbox, DEBUG_RED);
 				}
 			});
 		}
