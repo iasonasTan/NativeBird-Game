@@ -70,7 +70,7 @@ abstract class Model {
 }
 
 final class Player : Model {
-    private Texture2D* textureDead;
+    private Texture2D* textureDead, textureFalling;
     private bool dead = false;
     private float velocityY = 0.2f;
 
@@ -84,6 +84,7 @@ final class Player : Model {
         );
         super(bounds, hitbox, [&BIRD_1, &BIRD_2]);
         textureDead = &BIRD_D;
+        textureFalling = &BIRD_1;
     }
 
     public override void update(Context context) {
@@ -117,8 +118,14 @@ final class Player : Model {
     public override Texture2D* getTextureRef(float gameTime) {
         if(dead) {
             return textureDead;
-        } else {
+        } else if (velocityY < FLAP_STRENGTH/2) {
+            // Bird is flapping (velocityY < 0)
+            // Return swapping textures.
             return super.getTextureRef(gameTime);
+        } else {
+            // Possitive velocity means that the bird is falling.
+            // Bird desn't flap, it's just falling.
+            return textureFalling;
         }
     }
 }
