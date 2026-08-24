@@ -195,7 +195,7 @@ final class BotPipe : Pipe {
     protected override Rectangle getHitbox(Rectangle bounds) {
         float diffH = bounds.height/10f;
         float diffW = bounds.width /5.0f;
-        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW, bounds.height-diffH*2);
+        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW*2, bounds.height-diffH*2);
     }
 
     protected override Texture2D* getTexture() {
