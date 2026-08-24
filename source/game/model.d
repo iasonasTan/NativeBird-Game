@@ -76,9 +76,12 @@ final class Player : Model {
 
     this() {
         Rectangle bounds = Rectangle(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE);
-        const float hitboxGap = 30.0f;
-        Rectangle hitbox = Rectangle(bounds.x+hitboxGap, bounds.y+hitboxGap,
-            bounds.width-hitboxGap*2, bounds.height-hitboxGap*2);
+        Rectangle hitbox = Rectangle(
+            bounds.x,
+            bounds.y +bounds.height/7.0f,
+            bounds.width -bounds.width/10.0f,
+            bounds.height -bounds.height/2.2f
+        );
         super(bounds, hitbox, [&BIRD_1, &BIRD_2]);
         textureDead = &BIRD_D;
     }
@@ -143,7 +146,7 @@ abstract class Pipe : Model {
     private immutable float SPEED = -120.0f;
 
     this(float y, float offsetX) {
-        Rectangle bounds = Rectangle(SCREEN_WIDTH*1, y, PIPE_WIDTH, PIPE_HEIGHT);
+        Rectangle bounds = Rectangle(SCREEN_WIDTH, y, PIPE_WIDTH, PIPE_HEIGHT);
         // This call may produce segmentation fault but here,
         // all properties are private so subclass can't access them.
         super(bounds, getHitbox(bounds), [getTexture]);
@@ -167,9 +170,9 @@ final class TopPipe : Pipe {
     }
 
     protected override Rectangle getHitbox(Rectangle bounds) {
-        float diffH = bounds.height /40.0f;
-        float diffW = bounds.width  /25.0f;
-        return Rectangle(bounds.x+diffW, bounds.y, bounds.width-diffW, bounds.height-diffH);
+        float diffH = bounds.height/10f;
+        float diffW = bounds.width /5.0f;
+        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW*2, bounds.height-diffH*2);
     }
 
     protected override Texture2D* getTexture() {
@@ -183,9 +186,9 @@ final class BotPipe : Pipe {
     }
 
     protected override Rectangle getHitbox(Rectangle bounds) {
-        float diffH = bounds.height /40.0f;
-        float diffW = bounds.width  /25.0f;
-        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW, bounds.height);
+        float diffH = bounds.height/10f;
+        float diffW = bounds.width /5.0f;
+        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW, bounds.height-diffH*2);
     }
 
     protected override Texture2D* getTexture() {
@@ -250,7 +253,7 @@ final class Pipes {
             topY = uniform(-PIPE_HEIGHT/2, 0.0f);
         }
 
-        float botY = topY+PIPE_HEIGHT+MODEL_SIZE*1.3;
+        float botY = topY+PIPE_HEIGHT +MODEL_SIZE;
         return [topY, botY];
     }
 }

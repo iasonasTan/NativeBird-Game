@@ -31,7 +31,7 @@ import game.sound : MusicHandler;
 final class Game : AbstractScreen, Context {
 	// Logic
 	private float gameTime = 0.0f;
-	private bool drawDebug = true;
+	private bool drawDebug = false;
 	private ScoreHandler scoreHandler;
 
 	// Models
