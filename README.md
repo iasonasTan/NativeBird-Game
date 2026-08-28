@@ -1,6 +1,10 @@
 # Native Bird
 ## A FlappyBird implementation with Dlang and Raylib.
 
+The whole point of this project is to do everything myself.
+
+I made a working flappy bird implementation that just works and looks nice for me.
+
 <img width="700" alt="mmenu" src="https://github.com/user-attachments/assets/755a9c64-0efd-4844-9b9c-8cd6c2f52d1e" />
 
 <img width="700" alt="smenu" src="https://github.com/user-attachments/assets/257aa7f6-6d59-4708-82a1-ccda0cecb685" />
