@@ -17,6 +17,8 @@ final class MainMenu : AbstractScreen {
     protected override View[] uiBuild() {
         import game.game : Game;
         import main : screens;
+        import std.datetime : Clock;
+        import std.conv : to;
 
         View title = new Label("Местная птица", 40.0f);
         title.setPos(100.0f, 100.0f);
@@ -43,7 +45,17 @@ final class MainMenu : AbstractScreen {
             .exit(0);
         };
 
-        return [title, play, exitButton, settingsButton];
+        auto graphics = new Label("Graphics are made by Jason Tantaros", 29.0f);
+        graphics.bottom(getBounds.height);
+        auto music = new Label("Music is made by Jason Tantaros", 29.0f);
+        music.above(graphics);
+        string yearStr = Clock.currTime.year.to!string;
+        auto copyright = new Label("Copyright © "~yearStr~" Jason Tantaros, Licensed under GPL-v3", 29.0f);
+        copyright.above(music);
+        auto owner = new Label("Developed by Jason Tantaros", 31.0f);
+        owner.above(copyright);
+
+        return [title, play, exitButton, settingsButton, graphics, music, copyright, owner];
     }
 
     public override void safeDraw() {
