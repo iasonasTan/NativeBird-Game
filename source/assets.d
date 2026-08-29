@@ -23,7 +23,12 @@ void loadAssets() {
 
 private void loadMainFont() {
     int[] codepoints;
-    for (int i = 32; i <= 126; i++)        { codepoints ~= i; }
+
+    // Basic ASCII
+    for (int i = 32; i <= 126; i++) { codepoints ~= i; }
+    // Copyright symbol
+    codepoints ~= 0x00A9;
+    // Cyrillic characters
     for (int i = 0x0400; i <= 0x04FF; i++) { codepoints ~= i; }
 
     mainFont = LoadFontFromMemory(".ttf", MAIN_FONT_BYTES.ptr, cast(int)MAIN_FONT_BYTES.length,
