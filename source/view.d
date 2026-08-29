@@ -20,11 +20,11 @@ abstract class View {
         bounds.y = y;
     }
 
-    public void alignRight(Rectangle parentBounds) {
+    public void right(Rectangle parentBounds) {
         bounds.x = parentBounds.x + parentBounds.width - bounds.width;
     }
 
-    public void alignLeft(Rectangle parentBounds) {
+    public void left(Rectangle parentBounds) {
         bounds.x = parentBounds.x;
     }
 
@@ -56,6 +56,14 @@ abstract class View {
     public void centerHorizontally() {
         import draw : SCREEN_WIDTH;
         bounds.x = SCREEN_WIDTH /2 -bounds.w /2;
+    }
+
+    public void top() {
+        bounds.y = 0 + margin;
+    }
+
+    public void bottom(float parentHeight) {
+        bounds.y = parentHeight - margin - bounds.height;
     }
 
     public void draw() {}

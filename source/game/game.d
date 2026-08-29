@@ -80,7 +80,7 @@ final class Game : AbstractScreen, Context {
 		scoreHandler = new ScoreHandler();
 		int bscore = scoreHandler.get()[1];
 		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
-		scoreView.alignRight(getBounds);
+		scoreView.right(getBounds);
 	}
 
 	public override void safeDraw() {
@@ -180,7 +180,7 @@ final class PauseMenu : AbstractScreen {
 
 		Rectangle fakeBounds = getBounds;
 		fakeBounds.x -= 15.0f;
-		title.alignLeft(fakeBounds);
+		title.left(fakeBounds);
 
 		auto restart = new Button("Перезапустить игру.", 32.0f);
 		restart.below(title);
