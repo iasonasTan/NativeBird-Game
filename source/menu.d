@@ -45,14 +45,14 @@ final class MainMenu : AbstractScreen {
             .exit(0);
         };
 
-        auto graphics = new Label("Graphics are made by Jason Tantaros", 29.0f);
+        auto graphics = new Label("Графика сделана Джейсоном Тантаросом.", 29.0f);
         graphics.bottom(getBounds.height);
-        auto music = new Label("Music is made by Jason Tantaros", 29.0f);
+        auto music = new Label("Музыку написал Джейсон Тантарос.", 29.0f);
         music.above(graphics);
         string yearStr = Clock.currTime.year.to!string;
-        auto copyright = new Label("Copyright © "~yearStr~" Jason Tantaros, Licensed under GPL-v3", 29.0f);
+        auto copyright = new Label("Авторское право © "~yearStr~" Джейсон Тантарос, лицензия GPL-v3", 29.0f);
         copyright.above(music);
-        auto owner = new Label("Developed by Jason Tantaros", 31.0f);
+        auto owner = new Label("Разработано Джейсоном Тантаросом", 31.0f);
         owner.above(copyright);
 
         return [title, play, exitButton, settingsButton, graphics, music, copyright, owner];
