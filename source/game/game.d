@@ -46,7 +46,7 @@ final class Game : AbstractScreen, Context {
 	this(bool visible) {
 		import std.stdio : writeln;
 		writeln("Initializing game screen...");
-		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), visible);
+		super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), visible, () => uiBuild);
 		initializeObjects();
 	}
 
@@ -54,7 +54,7 @@ final class Game : AbstractScreen, Context {
 	public override Player getPlayer() { return player; }
 	public override float getDeltaTime() { return GetFrameTime(); }
 
-	public override View[] uiBuild() {
+	private View[] uiBuild() {
 		gameOverView = new Label("Игра закончена!", 33.0f);
 		gameOverView.setPos(0.0f, 100.0f);
 		gameOverView.centerHorizontally();
@@ -165,14 +165,14 @@ final class PauseMenu : AbstractScreen {
 		import std.stdio : writeln;
 		writeln("Initializing pause menu screen...");
 		float width = 500.0f, height = 300.0f;
-		super(Rectangle(SCREEN_WIDTH/2-width/2,SCREEN_HEIGHT/2-height/2,width,height), visible);
+		super(Rectangle(SCREEN_WIDTH/2-width/2,SCREEN_HEIGHT/2-height/2,width,height), visible, () => uiBuild);
 	}
 
 	public void enableResume(bool v) {
 		resume.setVisible(v);
 	}
 
-	public override View[] uiBuild() {
+	private View[] uiBuild() {
 		import main : screens;
 
 		View title = new Label("Игра приостановлена.", 40.0f);

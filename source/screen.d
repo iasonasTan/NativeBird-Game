@@ -18,24 +18,19 @@ abstract class AbstractScreen : Screen {
     private View[] views;
     private Rectangle bounds;
 
-    this(Rectangle bounds) {
+    this(Rectangle bounds, View[] delegate() uiBuild) {
         this.bounds = bounds;
-
-        // This call may produce segmentation fault but here,
-        // all properties are private so subclass can't access them.
         views ~= uiBuild();
     }
 
-    this(Rectangle bounds, bool visible) {
-        this(bounds);
+    this(Rectangle bounds, bool visible, View[] delegate() uiBuild) {
+        this(bounds, uiBuild);
         this.visible = visible; // Gets hidden silently
     }
 
     public abstract void safeDraw();
 
     public abstract void safeUpdate();
-
-    protected abstract View[] uiBuild();
 
     public override bool isVisible() { return visible; }
 

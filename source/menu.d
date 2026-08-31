@@ -11,10 +11,10 @@ final class MainMenu : AbstractScreen {
         import std.stdio : writeln;
         writeln("Initializing main menu screen...");
         import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
-        super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+        super(Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), () => uiBuild);
     }
 
-    protected override View[] uiBuild() {
+    private View[] uiBuild() {
         import game.game : Game;
         import main : screens;
         import std.datetime : Clock;
@@ -74,11 +74,11 @@ public final class SettingsMenu : AbstractScreen {
         import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
         import raylib : Rectangle;
         import std.stdio : writeln;
-        super(Rectangle(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT), visible);
+        super(Rectangle(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT), visible, () => uiBuild);
         writeln("Initializing settings menu...");
     }
 
-    protected override View[] uiBuild() {
+    private View[] uiBuild() {
         import main : screens;
 
         Label title = new Label("Настройки.", 40.0f);
