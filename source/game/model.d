@@ -12,16 +12,22 @@ private immutable float FLAP_STRENGTH = 150.0f;
 abstract class Model {
     private Rectangle bounds;
     private Rectangle hitbox;
-    private Texture2D*[] texturePtrs;
+    private Texture2D* texture_ptr;
 
-    private int textureIdx = 0;
-    private const float textureDelta = 0.5f;
-    private float lastTextureSwitch  = 0.0f;
-
-    this(Rectangle bounds, Rectangle hitbox, Texture2D*[] texturePtrs) {
+    this(Rectangle bounds, Rectangle hitbox, Texture2D* texture_ptr) {
         this.bounds = bounds;
         this.hitbox = hitbox;
-        this.texturePtrs = texturePtrs;
+        this.texture_ptr = texture_ptr;
+    }
+
+    this(Rectangle bounds, Rectangle hitbox, Texture2D*[] texture_ptr_array) {
+        import std.exception : enforce;
+        enforce(
+            texture_ptr_array.length == 1,
+            "Model.this(Rectangle bounds, Rectangle hitbox, Texture2D*[] texture_ptr_array) "~
+            "accepts only one member in texture_ptr_array"
+        );
+        this(bounds, hitbox, texture_ptr_array[0]);
     }
 
     public bool collidesWith(Model other) {
@@ -36,15 +42,12 @@ abstract class Model {
         // blank
     }
 
-    public Texture2D* getTextureRef(float gameTime) {
-        if(texturePtrs.length != 1 && lastTextureSwitch+textureDelta < gameTime) {
-            textureIdx++;
-            if(textureIdx >= texturePtrs.length) {
-                textureIdx = 0;
-            }
-            lastTextureSwitch = gameTime;
+    public Texture2D* getTextureRef() {
+        import std.conv : to;
+        if(texture_ptr is null) {
+            throw new NoTexturePresentException("Attempted to get not existing texture of " ~ this.to!string);
         }
-        return texturePtrs[textureIdx];
+        return texture_ptr;
     }
 
     public final float x() { return bounds.x; }
@@ -70,9 +73,12 @@ abstract class Model {
 }
 
 final class Player : Model {
-    private Texture2D* textureDead, textureFalling;
+    private Texture2D* textureDead, textureOnFlap;
     private bool dead = false;
     private float velocityY = 0.2f;
+
+    private int flappingFrames = 0;
+    private const int FLAPPING_FRAMES_MAX = 15;
 
     this() {
         Rectangle bounds = Rectangle(SCREEN_WIDTH/2-MODEL_SIZE/2, SCREEN_HEIGHT/2-MODEL_SIZE/2, MODEL_SIZE, MODEL_SIZE);
@@ -82,9 +88,9 @@ final class Player : Model {
             bounds.width -bounds.width/10.0f,
             bounds.height -bounds.height/2.2f
         );
-        super(bounds, hitbox, [&BIRD_1, &BIRD_2]);
+        super(bounds, hitbox, &BIRD_1);
         textureDead = &BIRD_D;
-        textureFalling = &BIRD_1;
+        textureOnFlap = &BIRD_2;
     }
 
     public override void update(Context context) {
@@ -96,7 +102,7 @@ final class Player : Model {
             IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT);
         const bool keyPressed = IsKeyDown(KeyboardKey.KEY_SPACE);
         if(!dead && (keyPressed || mouseButtonPressed)) {
-            flap(context);
+            flap();
         }
         if(y > SCREEN_HEIGHT) {
             dead = true;
@@ -111,22 +117,20 @@ final class Player : Model {
         return !dead;
     }
 
-    public void flap(Context context) {
+    public void flap() {
         velocityY = -FLAP_STRENGTH;
+        flappingFrames = 0;
     }
 
-    public override Texture2D* getTextureRef(float gameTime) {
+    public override Texture2D* getTextureRef() {
         if(dead) {
             return textureDead;
-        } else if (velocityY < FLAP_STRENGTH/2) {
-            // Bird is flapping (velocityY < 0)
-            // Return swapping textures.
-            return super.getTextureRef(gameTime);
-        } else {
-            // Possitive velocity means that the bird is falling.
-            // Bird desn't flap, it's just falling.
-            return textureFalling;
+        } else if (flappingFrames < FLAPPING_FRAMES_MAX) {
+            // Bird has flapped, returning flap texture this time.
+            flappingFrames++;
+            return textureOnFlap;
         }
+        return super.getTextureRef();
     }
 }
 
@@ -262,5 +266,18 @@ final class Pipes {
 
         float botY = topY+PIPE_HEIGHT +MODEL_SIZE;
         return [topY, botY];
+    }
+}
+
+public final class NoTexturePresentException : Exception {
+    /**
+    * Creates a new instance of Exception. The nextInChain parameter is used
+    * internally and should always be $(D null) when passed by user code.
+    * This constructor does not automatically throw the newly-created
+    * Exception; the $(D throw) expression should be used for that purpose.
+    */
+    @nogc @safe pure nothrow this(string msg)
+    {
+        super(msg);
     }
 }

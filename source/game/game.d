@@ -90,8 +90,8 @@ final class Game : AbstractScreen, Context {
 		const Color DEBUG_RED   = Color(230, 41, 55, 255/3);
 
 		ClearBackground(Colors.RAYWHITE);
-		drawModel(background, this);
-		drawModel(player, this);
+		drawModel(background);
+		drawModel(player);
 		if(drawDebug) {
 			drawRectangle(player.gbounds, DEBUG_GREEN);
 			drawRectangle(player.ghitbox, DEBUG_RED);
@@ -99,7 +99,7 @@ final class Game : AbstractScreen, Context {
 		foreach(p; pipes) {
 			import game.model : Model;
 			p.draw(delegate(Model model) {
-				drawModel(model, this);
+				drawModel(model);
 				if(drawDebug) {
 					drawRectangle(model.gbounds, DEBUG_GREEN);
 					drawRectangle(model.ghitbox, DEBUG_RED);

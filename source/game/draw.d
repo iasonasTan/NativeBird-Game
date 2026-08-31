@@ -16,6 +16,6 @@ public void initGameDraw() {
     BACKGROUND_HEIGHT = SCREEN_HEIGHT;
 }
 
-void drawModel(Model model, Context context) {
-    DrawTexture(*model.getTextureRef(context.getGameTime()), model.x.to!int, model.y.to!int, Colors.WHITE);
+void drawModel(Model model) {
+    DrawTexture(*model.getTextureRef(), model.x.to!int, model.y.to!int, Colors.WHITE);
 }
