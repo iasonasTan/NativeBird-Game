@@ -153,57 +153,32 @@ final class Background : Model {
     }
 }
 
-abstract class Pipe : Model {
-    private immutable float SPEED = -120.0f;
-
-    this(float y, float offsetX) {
-        Rectangle bounds = Rectangle(SCREEN_WIDTH, y, PIPE_WIDTH, PIPE_HEIGHT);
-        // This call may produce segmentation fault but here,
-        // all properties are private so subclass can't access them.
-        super(bounds, getHitbox(bounds), [getTexture]);
-        dx(offsetX);
+final class Pipe : Model {
+    public static Pipe createTopPipe(float y, float offx) {
+        return new Pipe(y, offx, &PIPE_T);
     }
 
-    protected abstract Rectangle getHitbox(Rectangle bounds);
-    protected abstract Texture2D* getTexture();
+    public static Pipe createBotPipe(float y, float offx) {
+        return new Pipe(y, offx, &PIPE_B);
+    }
+
+    private immutable float SPEED = -120.0f;
+
+    private this(float y, float offsetX, Texture2D* texture_ptr) {
+        Rectangle bounds = Rectangle(SCREEN_WIDTH, y, PIPE_WIDTH, PIPE_HEIGHT);
+        Rectangle hitbox = Rectangle(
+            bounds.x+bounds.width/5.0f,bounds.y+bounds.height/10f,
+            bounds.width-bounds.width /5.0f*2, bounds.height-bounds.height/10f*2
+        );
+        super(bounds, hitbox, texture_ptr);
+        dx(offsetX);
+    }
 
     public override void update(Context context) {
         dx(SPEED * context.getDeltaTime());
         if(context.getPlayer().collidesWith(this)) {
             context.getPlayer().kill();
         }
-    }
-}
-
-final class TopPipe : Pipe {
-    this(float y, float offx) {
-        super(y, offx);
-    }
-
-    protected override Rectangle getHitbox(Rectangle bounds) {
-        float diffH = bounds.height/10f;
-        float diffW = bounds.width /5.0f;
-        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW*2, bounds.height-diffH*2);
-    }
-
-    protected override Texture2D* getTexture() {
-        return &PIPE_T;
-    }
-}
-
-final class BotPipe : Pipe {
-    this(float y, float offx) {
-        super(y, offx);
-    }
-
-    protected override Rectangle getHitbox(Rectangle bounds) {
-        float diffH = bounds.height/10f;
-        float diffW = bounds.width /5.0f;
-        return Rectangle(bounds.x+diffW, bounds.y+diffH, bounds.width-diffW*2, bounds.height-diffH*2);
-    }
-
-    protected override Texture2D* getTexture() {
-        return &PIPE_B;
     }
 }
 
@@ -218,8 +193,8 @@ final class Pipes {
 
     this(float offsetX) {
         float[] newY = getPipesY();
-        topPipe = new TopPipe(newY[0], offsetX);
-        botPipe = new BotPipe(newY[1], offsetX);
+        topPipe = Pipe.createTopPipe(newY[0], offsetX);
+        botPipe = Pipe.createBotPipe(newY[1], offsetX);
     }
 
     public void update(Context context) {
