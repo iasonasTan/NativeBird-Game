@@ -4,7 +4,7 @@ immutable string APPNAME = "native_bird";
 
 import raylib : InitWindow, SetExitKey, SetTargetFPS, WindowShouldClose,
     CloseWindow, EndDrawing, BeginDrawing, KeyboardKey, SetWindowIcon, LoadImageFromMemory;
-import assets : loadAssets, windowIcon;
+import assets : loadAssets, windowIcon, loadUiStrings;
 
 import screen : Screen;
 import draw : SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -31,6 +31,8 @@ void main() {
     InitWindow(cast(int)SCREEN_WIDTH, cast(int)SCREEN_HEIGHT, "Местная птица");
     SetTargetFPS(60);
     SetExitKey(KeyboardKey.KEY_NULL);
+
+    loadUiStrings;
 
     initDraw;
     initGameDraw;
@@ -61,10 +63,10 @@ public void initializeEngine() {
     import game.draw : initGameDraw;
     import main : initScreens;
     import game.game : initGame;
-    import assets : loadAssets;
 
     initDraw;
     initGameDraw;
+    loadUiStrings;
     initScreens;
     initGame;
     loadAssets;

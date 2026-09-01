@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="game_name">Native Bird</string>
+
+    <!-- Main Menu -->
+    <string id="play">Играть</string>
+    <string id="settings">Настройки</string>
+    <string id="exit">Выход</string>
+    <string id="developed">Разработано: Jason Tantaros</string>
+    <string id="copyright1">Copyright © </string>
+    <string id="copyright2"> Jason Tantaros, Лицензия GPL-v3</string>
+    <string id="music">Музыка: Jason Tantaros.</string>
+    <string id="graphics">Графика: Jason Tantaros</string>
+
+    <!-- Settings Menu -->
+    <string id="resolution">Разрешение: </string>
+    <string id="monitor">Монитор</string>
+    <string id="enable_music">Включить музыку</string>
+    <string id="disable_music">Выключить музыку</string>
+    <string id="return_mmenu">Назад в главное меню</string>
+    <string id="language">Язык: </string>
+
+    <!-- Game -->
+    <string id="button_pause">Пауза</string>
+    <string id="score">Счет: </string>
+    <string id="bscore">Лучший счет: </string>
+    <string id="game_over">Игра закончена!</string>
+
+    <!-- Pause Menu -->
+    <string id="game_paused">Игра приостановлена</string>
+    <string id="continue">Продолжить</string>
+    <string id="newgame">Новая игра</string>
+</strings>

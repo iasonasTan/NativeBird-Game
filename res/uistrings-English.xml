@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="game_name">Native Bird</string>
+
+    <!-- Main Menu -->
+    <string id="play">Play</string>
+    <string id="settings">Settings</string>
+    <string id="exit">Exit</string>
+    <string id="developed">Developed by Jason Tantaros</string>
+    <string id="copyright1">Copyright © </string>
+    <string id="copyright2"> Jason Tantaros, Licensed under GPL-v3</string>
+    <string id="music">Music made by Jason Tantaros.</string>
+    <string id="graphics">Graphics made by Jason Tantaros</string>
+
+    <!-- Settings Menu -->
+    <string id="resolution">Resolution: </string>
+    <string id="monitor">Monitor</string>
+    <string id="enable_music">Enable Music</string>
+    <string id="disable_music">Disable Music</string>
+    <string id="return_mmenu">Back to main menu</string>
+    <string id="language">Language: </string>
+    <string id="game_over">Game Over!</string>
+
+    <!-- Game -->
+    <string id="button_pause">Pause</string>
+    <string id="score">Score: </string>
+    <string id="bscore">Best Score: </string>
+
+    <!-- Pause Menu -->
+    <string id="game_paused">Game is paused</string>
+    <string id="continue">Continue</string>
+    <string id="newgame">New Game</string>
+</strings>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="game_name">Native Bird</string>
+
+    <!-- Main Menu -->
+    <string id="play">Παιχνίδι</string>
+    <string id="settings">Ρυθμίσεις</string>
+    <string id="exit">Έξοδος</string>
+    <string id="developed">Δημιουργήθηκε από τον Jason Tantaros</string>
+    <string id="copyright1">Copyright © </string>
+    <string id="copyright2"> Jason Tantaros, Με άδεια GPL-v3</string>
+    <string id="music">Η μουσική δημιουργήθηκε από τον Jason Tantaros.</string>
+    <string id="graphics">Τα γραφικά δημιουργήθηκαν από τον Jason Tantaros</string>
+
+    <!-- Settings Menu -->
+    <string id="resolution">Ανάλυση: </string>
+    <string id="monitor">Οθόνη</string>
+    <string id="enable_music">Ενεργοποίηση Μουσικής</string>
+    <string id="disable_music">Απενεργοποίηση Μουσικής</string>
+    <string id="return_mmenu">Επιστροφή στο κύριο μενού</string>
+    <string id="language">Γλώσσα: </string>
+
+    <!-- Game -->
+    <string id="button_pause">Παύση</string>
+    <string id="score">Σκορ: </string>
+    <string id="bscore">Καλύτερο Σκορ: </string>
+    <string id="game_over">Τέλος Παιχνιδιού!</string>
+
+    <!-- Pause Menu -->
+    <string id="game_paused">Το παιχνίδι είναι σε παύση</string>
+    <string id="continue">Συνέχεια</string>
+    <string id="newgame">Νέο Παιχνίδι</string>
+</strings>

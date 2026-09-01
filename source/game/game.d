@@ -7,6 +7,7 @@ import game.model;
 import screen : AbstractScreen, Screen;
 import draw : drawRectangle, SCREEN_WIDTH, SCREEN_HEIGHT;
 import view : Label, Button, View;
+import assets : uistring;
 
 private string SCORE_CONFIG_PATH;
 
@@ -55,13 +56,13 @@ final class Game : AbstractScreen, Context {
 	public override float getDeltaTime() { return GetFrameTime(); }
 
 	private View[] uiBuild() {
-		gameOverView = new Label("Игра закончена!", 33.0f);
+		gameOverView = new Label(uistring("game_over"), 33.0f);
 		gameOverView.setPos(0.0f, 100.0f);
 		gameOverView.centerHorizontally();
 		gameOverView.setVisible(false);
 		gameOverView.setForeground(Color(222, 41, 16, 255));
 
-		Button menuButton = new Button("Показать меню.", 25.0f);
+		Button menuButton = new Button(uistring("button_pause"), 25.0f);
 		menuButton.setPos(0.0f, 0.0f);
 		menuButton.action = (Button _) => showMenu();
 
@@ -72,14 +73,14 @@ final class Game : AbstractScreen, Context {
 	}
 
 	public void initializeObjects() {
-		scoreView.setText("Счет: 0");
+		scoreView.setText(uistring("score")~": 0");
 		player = new Player();
 		background = new Background();
 		pipes = [new Pipes(), new Pipes(+SCREEN_WIDTH/2)];
 		gameOverView.setVisible(false);
 		scoreHandler = new ScoreHandler();
 		int bscore = scoreHandler.get()[1];
-		scoreView.setText("Счет: 0, Лучший результат: " ~ bscore.to!string);
+		scoreView.setText(uistring("score")~"0, "~uistring("bscore")~bscore.to!string);
 		scoreView.right(getBounds);
 	}
 
@@ -143,7 +144,7 @@ final class Game : AbstractScreen, Context {
 		import std.format : format;
 		scoreHandler.increaseScore();
 		int[] scores = scoreHandler.get();
-		string scoresStr = format("Счет: %d, Лучший результат: %d", scores[0], scores[1]);
+		string scoresStr = format(uistring("score")~": %d, "~uistring("bscore")~": %d", scores[0], scores[1]);
 		scoreView.setText(scoresStr);
 	}
 
@@ -175,14 +176,14 @@ final class PauseMenu : AbstractScreen {
 	private View[] uiBuild() {
 		import main : screens;
 
-		View title = new Label("Игра приостановлена.", 40.0f);
+		View title = new Label(uistring("game_paused"), 40.0f);
 		title.setPos(0.0f, getBounds.y + title.margin);
 
 		Rectangle fakeBounds = getBounds;
 		fakeBounds.x -= 15.0f;
 		title.left(fakeBounds);
 
-		auto restart = new Button("Перезапустить игру.", 32.0f);
+		auto restart = new Button(uistring("newgame"), 32.0f);
 		restart.below(title);
 		restart.action = delegate(Button _) {
 			MusicHandler.getInstance.reset();
@@ -191,7 +192,7 @@ final class PauseMenu : AbstractScreen {
 			setVisible(false);
 		};
 
-		auto menu = new Button("Показать главное меню.", 32.0f);
+		auto menu = new Button(uistring("return_mmenu"), 32.0f);
 		menu.below(restart);
 		menu.action = delegate(Button _) {
 			screens.getMainMenu.setVisible(true);
@@ -200,7 +201,7 @@ final class PauseMenu : AbstractScreen {
 			MusicHandler.getInstance.reset();
 		};
 
-		resume = new Button("Возобновить игру.", 32.0f);
+		resume = new Button(uistring("continue"), 32.0f);
 		resume.below(menu);
 		resume.action = delegate(Button _) {
 			screens.getGame.setVisible(true);
